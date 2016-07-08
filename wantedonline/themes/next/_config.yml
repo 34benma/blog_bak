@@ -138,7 +138,7 @@ social_icons:
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.jpg
 # in site  directory(source/uploads): /uploads/avatar.jpg
-#avatar:
+avatar: http://o9z6i1a1s.bkt.clouddn.com/avatar.png
 
 
 # Table Of Contents in the Sidebar
@@ -235,10 +235,13 @@ mathjax:
 #swiftype_key:
 
 # Baidu Analytics ID
-#baidu_analytics:
+baidu_analytics: db4e295ad556b631fc95ded6e09dd78f
+
+# tencent_analytics
+tencent_analytics: 57256265
 
 # Duoshuo ShortName
-#duoshuo_shortname:
+duoshuo_shortname: wantedonline
 
 # Disqus
 #disqus_shortname:
@@ -254,7 +257,7 @@ mathjax:
 #add_this_id:
 
 # Share
-#duoshuo_share: true
+duoshuo_share: true
 
 # Google Webmaster tools verification setting
 # See: https://www.google.com/webmasters/
@@ -271,11 +274,11 @@ mathjax:
 # Make duoshuo show UA
 # user_id must NOT be null when admin_enable is true!
 # you can visit http://dev.duoshuo.com get duoshuo user id.
-#duoshuo_info:
-#  ua_enable: true
-#  admin_enable: false
-#  user_id: 0
-  #admin_nickname: Author
+duoshuo_info:
+  ua_enable: true
+  admin_enable: true
+  user_id: 6304054303845778000
+  admin_nickname: LouisWang
 
 
 # Facebook SDK Support.
