@@ -173,11 +173,14 @@ sidebar:
 
 
 # Blogrolls
-#links_title: Links
-#links_layout: block
+links_title: 常用链接
+links_layout: block
 #links_layout: inline
-#links:
-  #Title: http://example.com/
+links:
+   七牛云: https://portal.qiniu.com
+   ImportNew: http://www.importnew.com/
+   Jenkov.com: http://tutorials.jenkov.com/
+   Coding Geek: http://coding-geek.com/
 
 
 # ---------------------------------------------------------------
