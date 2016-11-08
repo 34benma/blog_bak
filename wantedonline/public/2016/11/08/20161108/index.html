@@ -1,0 +1,774 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="随笔,软件开发,IT生涯," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="技术家园" type="application/atom+xml" />
+
+
+
+
+
+
+
+
+
+<meta name="description" content="继续上一篇的话题。上一篇谈到了单元测试和团队代码规范问题.事实上到目前为止，我还没有碰到过一个团队对单元测试有过高的要求。我碰到的大部分团队可以说是对单元测试没有要求。这也和目前大部分开发团队碰到的现实情况是相符合的，开发的时间以及团队对代码的质量没有太多的要求。功能为王，实现功能就好，至于可维护性，可读性，可拓展性等等这些问题从来不考虑。这一篇我想谈一谈我对程序员代码质量的思考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件开发日常思考(二)">
+<meta property="og:url" content="http://wantedonline.cn/2016/11/08/20161108/index.html">
+<meta property="og:site_name" content="技术家园">
+<meta property="og:description" content="继续上一篇的话题。上一篇谈到了单元测试和团队代码规范问题.事实上到目前为止，我还没有碰到过一个团队对单元测试有过高的要求。我碰到的大部分团队可以说是对单元测试没有要求。这也和目前大部分开发团队碰到的现实情况是相符合的，开发的时间以及团队对代码的质量没有太多的要求。功能为王，实现功能就好，至于可维护性，可读性，可拓展性等等这些问题从来不考虑。这一篇我想谈一谈我对程序员代码质量的思考。">
+<meta property="og:updated_time" content="2016-11-08T14:09:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="软件开发日常思考(二)">
+<meta name="twitter:description" content="继续上一篇的话题。上一篇谈到了单元测试和团队代码规范问题.事实上到目前为止，我还没有碰到过一个团队对单元测试有过高的要求。我碰到的大部分团队可以说是对单元测试没有要求。这也和目前大部分开发团队碰到的现实情况是相符合的，开发的时间以及团队对代码的质量没有太多的要求。功能为王，实现功能就好，至于可维护性，可读性，可拓展性等等这些问题从来不考虑。这一篇我想谈一谈我对程序员代码质量的思考。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6304054303845778000,
+      author: 'LouisWang'
+    }
+  };
+</script>
+
+  <title> 软件开发日常思考(二) | 技术家园 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?db4e295ad556b631fc95ded6e09dd78f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57256265";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">技术家园</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">王诚的个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                软件开发日常思考(二)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-08T22:07:00+08:00" content="2016-11-08">
+              2016-11-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/软件开发日常/" itemprop="url" rel="index">
+                    <span itemprop="name">软件开发日常</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/08/20161108/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/08/20161108/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>继续<a href="http://wantedonline.cn/2016/08/20/20160820-1/">上一篇</a>的话题。上一篇谈到了单元测试和团队代码规范问题.事实上到目前为止，我还没有碰到过一个团队对单元测试有过高的要求。我碰到的大部分团队可以说是对单元测试没有要求。这也和目前大部分开发团队碰到的现实情况是相符合的，开发的时间以及团队对代码的质量没有太多的要求。功能为王，实现功能就好，至于可维护性，可读性，可拓展性等等这些问题从来不考虑。这一篇我想谈一谈我对程序员代码质量的思考。</p>
+<a id="more"></a>
+<p>很感恩和很幸运，我毕业后第一家公司是华为。为什么这么说呢？在大学的时候，我接触的项目和学到的东西，基本都是书上的。读了很多关于代码质量，代码风格以及软件工程理论性的东西。而真正巩固和实践是从工作开始的。入职华为前以及入职后新员工时期，大部分是培训。这里我从华为学到的两个重要的东西就是下面这两点。</p>
+<h2>以客户为中心</h2>
+
+<p>所有新员工入职华为大队培训一定有一堂非常重要的课就是讲华为的企业文化–以客户为中心，以奋斗者为本。</p>
+<p>作为一个研发人员，我们不可能接触到一线客户。当时我所在的大部门(2012实验室)是一个SBG(Service Business Group)，我们服务的对象是产品线的兄弟。我学到的第一个理念是我们的客户是我们的上一道工序。</p>
+<p>严格来说，无论在什么时候，对待任何人以及对待任何事，如果能够真正以客户为中心，也就是以服务好上一道工序为起点，那么很多事情都会有一个比较好的结果。</p>
+<p>这个和我想讲的软件开发有什么关系呢？</p>
+<p>软件开发是一个团队合作的活动。如果团队比较小，可能一个人就负责一个模块甚至一个项目。如果团队比较大，我们很多时候需要写一些公共接口给其他人用。这时候就有一个沟通和合作的问题。</p>
+<p>过去我的经验是，谁写的接口谁负责维护。因此，如果只为了省事图个简单，没有任何接口doc说明也没有约定一个编码规范，很有可能就要出问题。比如说接口返回数据问题。如果返回了错误数据或者空指针等就是接口编写者的问题。而不应该要求使用者去做参数校验来避免踩坑。这一点我认为就是一个客户为中心的问题。</p>
+<p>当然，在这一点上，过去的两年多，我一直在努力。我也看到了自己从一个经常犯错误的新手慢慢成长为一个比较少的犯错误的老油条。在这条路上，我还有很多事情可以做。</p>
+<h2>代码质量–程序员的尊严</h2>
+
+<p>软件开发是一个非常复杂的团队合作活动。在这项活动里，我比较认同两个东西。</p>
+<p>短板理论</p>
+<p>项目成功或失败不是一个或两个比较牛掰的人能决定得了的。取决于团队的整体水平以及团队中的短板。如果一个团队有比较好的编码规范以及90%的人都有较强的软件工程思想和编码水平，那么剩下的10%的短板也会跟着团队逐渐成长，最终整个团队的作战能力都能提升上去。开发出来的代码质量一定不会太低。</p>
+<p>破窗理论</p>
+<p>如果项目从一开始就向坏的方向发展，比如代码混乱，隐藏了很多潜在的安全问题。最后发展到最后一定会越来越坏，最终可能在某个重要的时间点爆发，然后彻底蹦了。因此，从项目一开始就保持一种比较严格的要求我觉得是一个比较好的做法。</p>
+<p>这两个东西和主题代码质量的关系。</p>
+<p>很多的时候，如果我们不注重这两点，任有项目代码做布朗运动，可能最终导致的结果是很不可控的。也许我们目前的资源以及条件，是功能为主，不要考虑网络资源，内存资源，CPU资源，安全问题等。但是最终当出现问题的时候已经不可控了，只能推到重来了。这就是一个失败的项目。</p>
+<p>因此，作为程序员，珍惜每一点内存，即便是一个Java程序员，即便我们有非常足够的内存可使用；珍视每一点性能提升，时间复杂度的下降，空间复杂度的下降；保持一套可读性，可维护性高的代码风格和命名规范是极其重要的。</p>
+<p>我们的代码写完之后很有可能是其他人维护，这时候别人的体验就是代码质量的体现，就是程序员尊严的体现，</p>
+<h2>总结</h2>
+
+<p>软件开发是一项复杂的活动。是一项团队合作，团队整体作战能力要求非常高的活动。因此，有时候项目的成败从团队水平就决定了。有时候可能一年两年看不出来问题，但当真正出现问题的时候已经无力回天了。而最初那批创造原始代码的人可能已经不在这里了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/随笔/" rel="tag">#随笔</a>
+          
+            <a href="/tags/软件开发/" rel="tag">#软件开发</a>
+          
+            <a href="/tags/IT生涯/" rel="tag">#IT生涯</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/03/20161103-1/" rel="next" title="这个世界会好吗？">
+                <i class="fa fa-chevron-left"></i> 这个世界会好吗？
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/11/08/20161108/"
+     data-title="软件开发日常思考(二)"
+     data-content=""
+     data-url="http://wantedonline.cn/2016/11/08/20161108/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/08/20161108/"
+           data-title="软件开发日常思考(二)" data-url="http://wantedonline.cn/2016/11/08/20161108/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://o9z6i1a1s.bkt.clouddn.com/avatar.png"
+               alt="LouisWang" />
+          <p class="site-author-name" itemprop="name">LouisWang</p>
+          <p class="site-description motion-element" itemprop="description">王诚的个人博客网站,记录一个码农的技术成长和生活情怀</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/34benma" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              常用链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://portal.qiniu.com" title="七牛云" target="_blank">七牛云</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.importnew.com/" title="ImportNew" target="_blank">ImportNew</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://tutorials.jenkov.com/" title="Jenkov.com" target="_blank">Jenkov.com</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://coding-geek.com/" title="Coding Geek" target="_blank">Coding Geek</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://java-performance.info/" title="Java-Performance" target="_blank">Java-Performance</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fangrenziwo.com" title="Fang's Blog" target="_blank">Fang's Blog</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">以客户为中心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">代码质量–程序员的尊严</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LouisWang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wantedonline"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -70,5 +70,5 @@ theme: next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: git@github.com:34benma/34benma.github.io.git
+  repository: https://github.com/34benma/34benma.github.io.git
   branch: master

@@ -1,0 +1,768 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="并发,数据结构," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="技术家园" type="application/atom+xml" />
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概要：本文详细讲解了在Java中使用LinkedList实现一种可以设置固定大小的线性集合，该集合线程安全，需要达到业务的最优性能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于LinkedList实现的固定大小线性排序数据结构">
+<meta property="og:url" content="http://wantedonline.cn/2016/07/06/base_linkedlist_data_structure20160706/index.html">
+<meta property="og:site_name" content="技术家园">
+<meta property="og:description" content="概要：本文详细讲解了在Java中使用LinkedList实现一种可以设置固定大小的线性集合，该集合线程安全，需要达到业务的最优性能。">
+<meta property="og:updated_time" content="2016-07-16T14:52:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于LinkedList实现的固定大小线性排序数据结构">
+<meta name="twitter:description" content="概要：本文详细讲解了在Java中使用LinkedList实现一种可以设置固定大小的线性集合，该集合线程安全，需要达到业务的最优性能。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6304054303845778000,
+      author: 'LouisWang'
+    }
+  };
+</script>
+
+  <title> 基于LinkedList实现的固定大小线性排序数据结构 | 技术家园 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?db4e295ad556b631fc95ded6e09dd78f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57256265";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">技术家园</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">王诚的个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于LinkedList实现的固定大小线性排序数据结构
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-06T17:52:28+08:00" content="2016-07-06">
+              2016-07-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/基础技术/" itemprop="url" rel="index">
+                    <span itemprop="name">基础技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/06/base_linkedlist_data_structure20160706/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/06/base_linkedlist_data_structure20160706/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3>概要：</h3><br>本文详细讲解了在Java中使用LinkedList实现一种可以设置固定大小的线性集合，该集合线程安全，需要达到业务的最优性能。<br><br><a id="more"></a><br><br><h3>1. 缘起</h3><br>最近工作过程中碰到一个做周期性更新排行榜的需求。涉及的数据字段和记录条数非常多。概括如下：<br>1. 数据分布于后台数据库100张数据表中；<br>2. 每张表的数据更新非常快，每天预估数据增量在1W条左右；<br>3. 排行榜的数据生成来源于这100张表中，只取前面100条；<br><br>约束：<br><br>- 数据库服务目前只有一个主从，数据周期性变化，原始数据必须放MySQL持久化，不能放Redis<br>- 尽可能减少数据库连接获取，尽可能减少数据库查询，这些昂贵的资源必须优先保证核心业务<br><br><h3>2. 基本思路</h3><br>如果数据量比较少，我们直接放到一个List然后调用Collections.sort排序即可。但是假如我们的排行榜要求的数据量是1W或者10W，每条记录按1KB的大小计算，那么100张表的数据量就是100<em>10W</em>1KB，服务器内存早就爆表。显然这种方案是不行的。<br><br>我们需要这样一种结构，每次一张数据库表中查出前m条记录，将这m条记录插入到一个容器中，这个容器会自动将这m条记录按大小排序，从另外一张表中查出m条记录，继续放到这个容器，容器依然能保证从大到小存储前m条记录。<br><br>这就好像一个擂台，我们可以设置这个擂台大小。每次放到擂台的选手，经过比赛之后，自动从大到小排好序，如果超过擂台大小，排在后面的选手自动淘汰。新加进来的选手可以来踢馆，最终强者留下。如果擂台大小还有剩余，可以容纳更多的选手。直到达到擂台大小就进入淘汰赛。<br><br>同时，还有一个需求，我们100张表可以用100个线程一次查询出来，因此这个容器必须线程安全。同时，性能要好。<br><br>纵观JDK的集合包，似乎没有现成的数据结构可以用。那是否可以直接使用J.U.C包中线程安全的集合？理论上是可以的。通过组合比如LinkedBlockingQueue，PriorityBlockingQueue或其他线程安全的数据结构。问题是我们还要时刻保持有序，大小固定这两个要求，隐含一个性能要好的隐形需求。如果直接使用线程安全的集合，显然还要额外加锁，两把锁以上的数据结构有可能存在死锁问题。<br><br>与其苦苦死锁寻找JDK给我们的馅饼，还不如自己动手，丰衣足食。即便重复写的轮子不如大师的轮子，但是先写一个放到测试环境跑一跑，只要大流程不出问题，还是不会给公司带来损失，发现小bug后面再慢慢优化就是。<br><br><h3>3. 初步实现</h3><br>首先，这个擂台比如增删频繁，因此使用链式结构是最优选。容器的元素一开始就有序，并且后面新加的元素要有序，使用插入排序是最优选，后面新加元素要找到合适的插入位置。就必定要和容器中的元素打擂，但并没必要一一比赛，因为容器的元素已经是有序的了。这时候使用二分查找寻找待插入元素的位置便是最优解。<br><br>插入：O(1),使用链表，无需移动元素<br>二分查找: O(lgn)<br>遍历集合: O(n)<br><br>我们JDK提供的集合排序会根据数据量规模自动选择排序算法，最优性能是O(nlgn),因为集合中的元素一开始是无序的。因此相比较而言，理论上我们的集合性能上要优于直接使用JDK提供的排序方法。<br><br>元素类型不确定，比较依据也不确定，固定大小可以由使用者设置，一旦设置就不能更改。因此这里必须使用泛型，同时由用户传入一个比较器，可以使用匿名内部类。同时传入一个固定大小。容器内部每添加一个元素前都要判断，当前是否已经达到擂台大小，如果新加入的元素超出了擂台大小，则必须进入淘汰赛，将最小元素淘汰。当然，维护从大到小还是从小到大可以通过比较器的返回值决定，这里我的需求是从大到小。<br><br>综合以上的条件，我们可以动手写代码了。<br><br><h3>4. 核心实现</h3>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArenaList</span>&lt;<span class="title">E</span>&gt; </span>&#123;</div><div class="line"><span class="comment">/*the arena capacity*/</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> capacity;</div><div class="line"><span class="comment">/*need user to define，int r = compare(e1, e2),when r &gt; 0，e1 &gt; e2,r = 0, e1 = e2, r &lt; 0, e1 &lt; e2*/</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Comparator&lt;E&gt; comparator;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> LinkedList&lt;E&gt; values;</div><div class="line"><span class="comment">/*if there is an element in list e1, that e1 equal e2, which e2 is we want to add,</span></div><div class="line"> * if keepNewerElement is false,we will drop e2,else drop e1*/</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> keepNewerElement;</div><div class="line"><span class="comment">/*at this moment,the element count, when eCount &lt; size, we can add new element into list and will not remove the last element*/</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> eCount = <span class="number">0</span>;</div></pre></td></tr></table></figure>
+<p>容器定义的字段如上代码所示，<br>capacity必须在构造函数中传入，一旦初始化之后就不能更改。同时以后可能会实现序列化，虽然现在没有考虑序列化问题。<br>comparator是用户定义的比较器，也必须在构造时初始化。我们约定，调用比较器的compare(e1, e2)比较元素，当返回值r &gt; 0，表示e1 &gt; e2,当r &lt; 0,表示e1 &lt; e2。r = 0则表示元素相等。<br>values是存储元素的最终容器，因为增删频繁，因此使用链表，初始化之后就不能更改；<br>keepNewerElement是这样一个作用，当排在最后的两个元素en和em，如果en = em,em是待加入元素，并且擂台已满，是否用新加入的淘汰旧的。默认这个开关是false。<br>eCount，表示当前容器中添加了多少元素。当擂台没有满时，eCount &lt; size，当擂台满了的时候 eCount = size。这里加了volatile修饰，是为了保证多线程下该变量的可见性。这里不深入探讨Java并发问题，因为这个问题要说清楚可以另开一篇文章来说。简单的说volatile是轻量级同步锁，可能保证变量的可见性但不能保证原子性。同时保证了一些可能引发潜在问题的重排序问题。这些涉及到Java内存模型(JMM)，不在多说。这里没有用J.U.C包下的原子变量是因为我们这里容器的增删也要加锁，为了更好的性能，就没必要CAS自旋消耗性能。</p>
+<p>提供的两个构造函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArenaList</span><span class="params">(<span class="keyword">int</span> capacity, Comparator&lt;E&gt; comparator)</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (capacity &lt;= <span class="number">0</span>) &#123;</div><div class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"size can't be negative number"</span>);</div><div class="line">       &#125;</div><div class="line">       </div><div class="line">       <span class="keyword">this</span>.capacity = capacity;</div><div class="line">       <span class="keyword">this</span>.comparator = comparator;</div><div class="line">       <span class="keyword">this</span>.keepNewerElement = <span class="keyword">false</span>;</div><div class="line">       <span class="keyword">this</span>.values = <span class="keyword">new</span> LinkedList&lt;E&gt;();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>默认keepNewerElement是false，我们也可以自定义为true<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArenaList</span><span class="params">(<span class="keyword">int</span> capacity, Comparator&lt;E&gt; comparator, <span class="keyword">boolean</span> keepNewerElement)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (capacity &lt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"size can't be negative number"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">this</span>.capacity = capacity;</div><div class="line">    <span class="keyword">this</span>.comparator = comparator;</div><div class="line">    <span class="keyword">this</span>.keepNewerElement = keepNewerElement;</div><div class="line">    <span class="keyword">this</span>.values = <span class="keyword">new</span> LinkedList&lt;E&gt;();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个容器中，凡是涉及到容器的增删操作都要考虑线程安全问题。因此都要加锁。锁的实现也有好多种。比如粗粒度的方法锁，或JDK提供的可重入锁(ReentrantLock)。但隐含的性能要求最好时将临界区保持最小。同时代码简洁，因此这里我选用了synchronized对象锁。以values作为锁对象。</p>
+<p>添加删除元素的部分代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * add e into list with thread-safe</div><div class="line"> * <span class="doctag">@param</span> e</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == e) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Null Element."</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">synchronized</span> (values) &#123;</div><div class="line">        <span class="keyword">int</span> index = findElementIndex(e);</div><div class="line">        <span class="keyword">if</span> (values.size() &gt;= capacity) &#123;</div><div class="line">            <span class="keyword">if</span> (keepNewerElement &amp;&amp; index &lt;= values.size()) &#123;</div><div class="line">                values.removeLast();</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; values.size())&#123;</div><div class="line">                <span class="comment">//e is in the middle of this list</span></div><div class="line">                values.removeLast();</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">//e is at the end of this list and e equals the minElement, no need to add.</span></div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        values.add(index, e);</div><div class="line">        eCount++;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>删除元素:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * remove e from list with thread-safe</div><div class="line"> * <span class="doctag">@param</span> e</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == e) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Null Element."</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">synchronized</span> (values) &#123;</div><div class="line">        <span class="keyword">if</span>(values.remove(e)) &#123;</div><div class="line">            eCount--;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>寻找待插入元素元素采用的算法是二分查找，这个算法原理非常简单，但是陷阱非常多，一不小心就会陷入死循环。我还记得当年我大学毕业处女面BAT中某一家，面试官让我写个二分查找。我三下五除二洋洋洒洒写完了，完全手写，没办法测试。估计当时肯定有bug。反正最终挂了。这个算法还真不是那么简单，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * find the index of e should be</div><div class="line"> * <span class="doctag">@param</span> e</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">findElementIndex</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> (values.size() == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span> index;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//values.size() &gt; 0</span></div><div class="line">    E minElement = values.getLast();</div><div class="line">    <span class="comment">//the largest element at the index of 0</span></div><div class="line">    <span class="keyword">int</span> high = values.lastIndexOf(minElement);</div><div class="line">    </div><div class="line">    E maxElement = values.getFirst();</div><div class="line">    <span class="comment">//the least element at the index of values.size() - 1</span></div><div class="line">    <span class="keyword">int</span> low = values.indexOf(maxElement);</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (compareTwoElement(minElement, e) &gt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">//minElement &gt;= e</span></div><div class="line">        index = high + <span class="number">1</span>;</div><div class="line">        <span class="keyword">return</span> index;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (compareTwoElement(maxElement, e) &lt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">//maxElement &lt;= e</span></div><div class="line">        <span class="keyword">return</span> index;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//only one element</span></div><div class="line">    <span class="keyword">if</span> (low == high) &#123;</div><div class="line">        <span class="keyword">if</span> (capacity == <span class="number">1</span>) &#123;</div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (compareTwoElement(minElement, e) &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//minElement &gt; e</span></div><div class="line">            index = high + <span class="number">1</span>;</div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (compareTwoElement(minElement, e) &lt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//minElement &lt; e</span></div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//minElement = maxElement = e</span></div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//more than one element and e must at the middle of this list,use binary search to find index</span></div><div class="line">    <span class="keyword">int</span> middle = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</div><div class="line">        middle = (low + high) / <span class="number">2</span>;</div><div class="line">        E minddleE = values.get(middle);</div><div class="line">        <span class="keyword">if</span> (compareTwoElement(minddleE, e) == <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//find it.</span></div><div class="line">            index = middle;</div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (compareTwoElement(minddleE, e) &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//middleE &gt; e</span></div><div class="line">            low = middle;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//middleE &lt; e</span></div><div class="line">            high = middle;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (high - low == <span class="number">1</span>) &#123;</div><div class="line">            <span class="comment">//if there only two element, e is in the middle of this list,low will never be higher or equal high</span></div><div class="line">            <span class="comment">//at this moment,should check out</span></div><div class="line">            <span class="comment">//[4,2,1],3 need to insert into it or [4,3,1],2 need to insert into it</span></div><div class="line">            <span class="keyword">return</span> low + <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="comment">//at this moment,low &gt;= high,and (middle + 1)is we should find</span></div><div class="line">    index = middle + <span class="number">1</span>;</div><div class="line">    <span class="keyword">return</span> index;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里注意的是，容器中，大的元素在index为0，因此low表示大元素，high表示小元素。这点有悖于约定俗称。当只剩一个元素比较时就要特别注意了。</p>
+<h3>5. 总结</h3><br>到这里，基本分析完了。我写过测试用例，尝试过使用100个线程来添加元素。目前业务上似乎没有问题。<br><br>这个容器的原理非常简单，涉及的知识点也不算难。都是大学学过的。但是真正写起来却花费了很多时间。需要想各种测试场景写各种测试代码。到现在我完全没有信心说这个容器没有任何bug。但目前基本能满足我们的业务需求。Java并发是一门非常精深非常有意思的学问。很多时候我们写出的代码功能是符合要求，但是性能上本来可以做到更好的。其中并发就是一门需要丰富的经验和钻研才能写出高并发高性能程序的学问。在这条路上，我才刚刚起步。<br><br>所有代码开源，可以自由使用。欢迎提出bug或更好的意见。特别是并发优化部分。<br><br>源码下载：<a href="https://github.com/34benma/MyTools/blob/master/src/com/util/ArenaList.java" title="https://github.com/34benma/MyTools/blob/master/src/com/util/ArenaList.java" target="_blank" rel="external">https://github.com/34benma/MyTools/blob/master/src/com/util/ArenaList.java</a><br><br><h3>6. 参考资料</h3>
+
+<ul>
+<li><a href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/java/util/LinkedList.java#LinkedList" target="_blank" rel="external">http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/java/util/LinkedList.java#LinkedList</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/并发/" rel="tag">#并发</a>
+          
+            <a href="/tags/数据结构/" rel="tag">#数据结构</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/06/good_start20160706/" rel="next" title="良好的开始">
+                <i class="fa fa-chevron-left"></i> 良好的开始
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/07/jvm-arch-anasi20160707/" rel="prev" title="Java虚拟机架构分析">
+                Java虚拟机架构分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/07/06/base_linkedlist_data_structure20160706/"
+     data-title="基于LinkedList实现的固定大小线性排序数据结构"
+     data-content=""
+     data-url="http://wantedonline.cn/2016/07/06/base_linkedlist_data_structure20160706/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/06/base_linkedlist_data_structure20160706/"
+           data-title="基于LinkedList实现的固定大小线性排序数据结构" data-url="http://wantedonline.cn/2016/07/06/base_linkedlist_data_structure20160706/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://o9z6i1a1s.bkt.clouddn.com/avatar.png"
+               alt="LouisWang" />
+          <p class="site-author-name" itemprop="name">LouisWang</p>
+          <p class="site-description motion-element" itemprop="description">王诚的个人博客网站,记录一个码农的技术成长和生活情怀</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/34benma" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              常用链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://portal.qiniu.com" title="七牛云" target="_blank">七牛云</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.importnew.com/" title="ImportNew" target="_blank">ImportNew</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://tutorials.jenkov.com/" title="Jenkov.com" target="_blank">Jenkov.com</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://coding-geek.com/" title="Coding Geek" target="_blank">Coding Geek</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://java-performance.info/" title="Java-Performance" target="_blank">Java-Performance</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fangrenziwo.com" title="Fang's Blog" target="_blank">Fang's Blog</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">概要：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">1. 缘起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">2. 基本思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">3. 初步实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">4. 核心实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">5. 总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">7.</span> <span class="nav-text">6. 参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LouisWang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wantedonline"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

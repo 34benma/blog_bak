@@ -1,0 +1,777 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="并发编程,原子性,可见性," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="技术家园" type="application/atom+xml" />
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在并发编程的世界里，有两个非常重要的关键字，分别是synchronized和volatile. 一句话概括这两个关键字的作用的话就是synchronized保证了原子性，volatile保证了可见性。本文将深入分析原子性和可见性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解原子性与可见性">
+<meta property="og:url" content="http://wantedonline.cn/2016/10/21/20161021-1/index.html">
+<meta property="og:site_name" content="技术家园">
+<meta property="og:description" content="在并发编程的世界里，有两个非常重要的关键字，分别是synchronized和volatile. 一句话概括这两个关键字的作用的话就是synchronized保证了原子性，volatile保证了可见性。本文将深入分析原子性和可见性。">
+<meta property="og:updated_time" content="2016-10-21T13:56:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解原子性与可见性">
+<meta name="twitter:description" content="在并发编程的世界里，有两个非常重要的关键字，分别是synchronized和volatile. 一句话概括这两个关键字的作用的话就是synchronized保证了原子性，volatile保证了可见性。本文将深入分析原子性和可见性。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6304054303845778000,
+      author: 'LouisWang'
+    }
+  };
+</script>
+
+  <title> 深入理解原子性与可见性 | 技术家园 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?db4e295ad556b631fc95ded6e09dd78f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=57256265";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">技术家园</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">王诚的个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                深入理解原子性与可见性
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-21T19:24:36+08:00" content="2016-10-21">
+              2016-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/深入理解/" itemprop="url" rel="index">
+                    <span itemprop="name">深入理解</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/21/20161021-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/21/20161021-1/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在并发编程的世界里，有两个非常重要的关键字，分别是synchronized和volatile. 一句话概括这两个关键字的作用的话就是synchronized保证了原子性，volatile保证了可见性。本文将深入分析原子性和可见性。</p>
+<a id="more"></a>
+<h2>原子性</h2>
+
+<p>所谓原子性就是指操作不可分解，不会出现一半成功，一半失败的情况。我们都知道事务具有ACID属性，其中的A就是原子性。事务中的原子性也是说一个完整的事务中定义的全部操作步骤要么全部成功，要么全部不成功，不可分解。和我们这里的原子性定义是一样的。在并发编程中，我们在临界区的某些操作，必须具有原子性。因为我们无法控制线程的切换，所以就有可能发生线程执行到某个中间位置，因为时间片或者等待资源的情况发了上下文切换，切入到另外一个线程，这时候就破坏了数据的一致性。因此，我们必须保证临界区中这些操作的原子性。</p>
+<h3>保证原子性的手段</h3>
+
+<p>保证原子性的手段之一就是加锁。所谓锁，我们可以这么理解，当我们某个线程获取了锁，就代表他获得了一个特殊通行证，并且这个通行证一定是唯一的。在它归还这个通行证之前，其他线程是没办法进入到锁区域的。自然其他线程也就无法看到锁区域中数据的状态，也不能修改其状态。因此，只要我们的线程没有释放锁，其他线程是无法进入到锁区域的。直到我们成功释放了锁，我们的操作都是原子性的，不会被其他线程所干扰。</p>
+<p>加锁的第一种方式是synchronized，这是Java提供的一个关键字，这个关键字的含义就是内置锁或者监视器锁。当我们的线程进入到了synchronized区域时，自动会获取锁，当退出这个区域是自动释放锁。如果我们使用javap打印一下一个synchronized修饰的代码块，我们会发现，有个叫<strong>enter monitor</strong>和<strong>exit monitor</strong>的两条指令，它们所包围的指令就是使用synchronized修饰的区域。</p>
+<p>在J.U.C里，提供了更加灵活的加锁机制，就是Lock类，这是从Java代码层面提供的锁机制。这套机制比synchronized更加灵活，而且从JDK 1.6之后，这套锁机制的性能比synchronized更好了。这里面将锁划分的更细，可以有互斥锁(写锁)和共享锁(读锁)。获取锁和释放锁的操作都是可控的了，因此更加灵活，但是带来的使用复杂性也更加高了，如果我们获取了锁忘记释放锁或者释放锁失败将有可能会造成死锁等。</p>
+<p>当我们看过J.U.C实现锁的方式(基于AQS)，我们自己也可以实现锁。如果使用Semaphore类的话，自己实现锁就更加简单了。</p>
+<p>当然，保证原子性的手段并不是只有加锁这一种。事实上，锁机制对指令执行性能是有影响的。因此，如果不是有必要，我们不要随便加锁，而且加锁的区域尽量保证最小化，不要将没有必要加锁的代码放到锁区域中来。</p>
+<p>原子性的另外一种方式是无锁化。这个看起来比较矛盾，其实是不矛盾的。无锁化是通过CAS(Compare and set)来实现的。J.U.C中提供了一些原子类，它保证原子性的方式就是CAS。后续我们分析J.U.C的原子类时将详细讲解CAS操作。</p>
+<p>两种实现原子性的方式并不是可以互相替代的，而是他们在特定的场景具有特定的使用方式。加锁一般是代码块。而无锁化则是一些需要原子化的变量，通过CAS比使用加锁在变量层面性能更高。</p>
+<h2>可见性</h2>
+
+<p>所谓可见性是指我们希望对于某些状态我们进行了修改，希望其他线程能够感知到。这里就有线程通信的意思在里面了。考虑这样一种场景，变量x是两个线程A,B都可以看到的，线程A，B都保存了一份副本在彼此的栈帧里，当线程A修改了x时，如果没有一种机制去通信告知线程B，线程B仍然使用的是旧的x值。因此可见性就是要保证线程B能及时感知到x的状态变化。同样在CPU层面，也有这种场景，比如多核多寄存器。同样有变量的缓存以及修改需要通知其他CPU或寄存器变量的修改。当然这个层面不是JVM来保证了。</p>
+<h3>保证可见性的手段</h3>
+
+<p>保证可见性的第一种方法是直接使用锁，从效果上是可以的。但是前文说过，锁的方式对性能影响比较大。因此Java提供了另外一个关键字叫做volatile。这个关键字就是用来保证可见性的，它还有一个别称叫“轻量级锁”。</p>
+<p>volatile为什么可以保证可见性呢? 这里可以从JMM找到原理。在下一篇讲解JMM时我们将详细分析synchronized和volatile两个关键字的原理。</p>
+<h2>总结</h2>
+
+<p>原子性和可见性是并发编程里两个非常重要的基础概念，只有深入理解了这两个概念，我们才能用好锁，用好可见性。才能编写出性能优越，线程安全的代码来。</p>
+<p><a href="http://wantedonline.cn/2016/09/08/20160908-1/">专题目录</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/并发编程/" rel="tag">#并发编程</a>
+          
+            <a href="/tags/原子性/" rel="tag">#原子性</a>
+          
+            <a href="/tags/可见性/" rel="tag">#可见性</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/20/20161020-1/" rel="next" title="多线程带来的线程安全和线程通信问题">
+                <i class="fa fa-chevron-left"></i> 多线程带来的线程安全和线程通信问题
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/29/20161029-1/" rel="prev" title="理解Java内存模型(JMM)">
+                理解Java内存模型(JMM) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/10/21/20161021-1/"
+     data-title="深入理解原子性与可见性"
+     data-content=""
+     data-url="http://wantedonline.cn/2016/10/21/20161021-1/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/21/20161021-1/"
+           data-title="深入理解原子性与可见性" data-url="http://wantedonline.cn/2016/10/21/20161021-1/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://o9z6i1a1s.bkt.clouddn.com/avatar.png"
+               alt="LouisWang" />
+          <p class="site-author-name" itemprop="name">LouisWang</p>
+          <p class="site-description motion-element" itemprop="description">王诚的个人博客网站,记录一个码农的技术成长和生活情怀</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/34benma" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              常用链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://portal.qiniu.com" title="七牛云" target="_blank">七牛云</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.importnew.com/" title="ImportNew" target="_blank">ImportNew</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://tutorials.jenkov.com/" title="Jenkov.com" target="_blank">Jenkov.com</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://coding-geek.com/" title="Coding Geek" target="_blank">Coding Geek</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://java-performance.info/" title="Java-Performance" target="_blank">Java-Performance</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fangrenziwo.com" title="Fang's Blog" target="_blank">Fang's Blog</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">原子性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.1.</span> <span class="nav-text">保证原子性的手段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">可见性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.1.</span> <span class="nav-text">保证可见性的手段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LouisWang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wantedonline"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
