@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wantedonline.cn/"/>
-  <updated>2016-11-08T14:09:07.000Z</updated>
+  <updated>2016-11-12T09:06:51.000Z</updated>
   <id>http://wantedonline.cn/</id>
   
   <author>
@@ -14,6 +14,53 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>J.U.C概述</title>
+    <link href="http://wantedonline.cn/2016/11/12/20161112/"/>
+    <id>http://wantedonline.cn/2016/11/12/20161112/</id>
+    <published>2016-11-12T09:04:22.000Z</published>
+    <updated>2016-11-12T09:06:51.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。</p>
+<p>J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了一个专门用于简化并发编程的工具包，这个工具包就是J.U.C。</p>
+<a id="more"></a>
+<p>业界有一句话说’并发不知<a href="http://g.oswego.edu" target="_blank" rel="external">Doug Lea</a>，学尽Java也枉然’。事实上，J.U.C的整个设计以及中间很多类的编写都是Doug Lea。上面链接是他的主页。他还编写了一本书叫做<java并发编程实践>.这本书对于Java程序员研究并发编程的理论与实践绝对帮助很大。</java并发编程实践></p>
+<h2>Executors类</h2>
+
+<p>这个包主要提供了一些线程池的工具类。事实上，创建线程和销毁线程都是一些消耗比较大的操作。因此J.U.C提供了这样一些类来简化线程的创建和销毁以及管理。主要有这么四中线程池：newCachedThreadPool，可缓存的线程池。它的用法是当我们希望创建的线程使用完之后不要马上销毁，可以给下一个任务去使用。因此可以将这些线程缓存起来重用。这样就节省了线程频繁创建于销毁带来的开支；newFixedThreadPool，固定大小的线程池。如果我们的任务数固定，而且可以确定线程数量使用这种线程池就比较好。不会有资源的浪费；newScheduledThreadPool，可调度的线程池。有一些任务我们希望在某个时间点或者某种频率触发，就可以使用这种线程池；newSingleThreadExecutor,单个线程的线程池。这种线程池一般用于任务数比较少，可以固定一个线程来执行。生产实践中我个人还是很少用到。</p>
+<p>跟线程池相关的自然是任务。J.U.C简化了我们创建和销毁以及管理线程的步骤，我们要做的只是将可以并行化的部分抽象出任务，写好task类即可。而task又可以带返回值和不带返回值。这些是通过Future等类实现。同时，在这个Executors框架里还提供了ForkJoin机制的实现类，用于工作窃取机制算法的实现。关于这个算法的原理，可以参考这个<a href="">文档</a>。涉及到线程池，涉及到任务，自然就会牵扯到很多东西，比如任务队列，优先级，启动和中断等。这些都定义在Executors这个框架里。</p>
+<h2>并发集合类</h2>
+
+<p>J.U.C提供了非常丰富的线程安全的集合类。比如队列，Map,List等数据结构。其中生产实践中用的最多的恐怕是ConcurrentHashMap了。这个类型的Map的详细介绍后面会有。它是一个线程安全的HashMap，但是性能比直接用HashTable或者同步化包装的HashMap高很多。原因需要看这个类的实现才能理解。根据不同的适用场景，提供了非常丰富的集合类供程序员适用。</p>
+<h2>原子信号量工具类</h2>
+
+<p>锁，信号量等在Java代码层面实现了。而且J.U.C提供的Lock类更加灵活，据说性能已经开始超过synchonized等关键字了。同时提供了一些信号量用于实现一些比如流控或者自定义锁等功能。</p>
+<h2>原子基本类</h2>
+
+<p>对于int,long，double等一些基本类，提供了一些对应的原子类的实现。这些类的线程安全保证是通过无锁化的CAS操作实现的。详细的后面的文章也会介绍。</p>
+<p>同时还有一些比如TimeUnit等工具类。</p>
+<h2>总结</h2>
+
+<p>J.U.C给Java程序员实现并发编程带来了极大的便利，因为并发编程本来就是一项比较复杂难以测试的事情，因此虽然J.U.C已经最大程度上简化了程序员的工作，但还是需要程序员对并发编程的理论非常熟悉，经历过很多次实践才能用好并发编程带来性能效率上的提升。</p>
+<p><a href="http://wantedonline.cn/2016/09/08/20160908-1/">专题目录</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。&lt;/p&gt;
+&lt;p&gt;J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了一个专门用于简化并发编程的工具包，这个工具包就是J.U.C。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="深入理解" scheme="http://wantedonline.cn/categories/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
+    
+    
+      <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
+    
+      <category term="J.U.C" scheme="http://wantedonline.cn/tags/J-U-C/"/>
+    
+  </entry>
   
   <entry>
     <title>软件开发日常思考(二)</title>
@@ -59,11 +106,11 @@
       <category term="软件开发日常" scheme="http://wantedonline.cn/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E6%97%A5%E5%B8%B8/"/>
     
     
-      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
-    
       <category term="软件开发" scheme="http://wantedonline.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/"/>
     
       <category term="IT生涯" scheme="http://wantedonline.cn/tags/IT%E7%94%9F%E6%B6%AF/"/>
+    
+      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
@@ -459,7 +506,7 @@
     <link href="http://wantedonline.cn/2016/09/08/20160908-1/"/>
     <id>http://wantedonline.cn/2016/09/08/20160908-1/</id>
     <published>2016-09-08T04:31:16.000Z</published>
-    <updated>2016-10-29T07:47:47.000Z</updated>
+    <updated>2016-11-12T09:10:05.000Z</updated>
     
     <content type="html"><![CDATA[<p>自认为还算是一个技术爱好者(软件相关)。不管是在学校还是在工作岗位上，都一直保持买书，看书的这样一个优良习惯。除了保持内心沉(zhuang)静(bi)，更重要的是我能系统深入学到很多东西。</p>
 <p>但是自从患上拖延症和懒癌之后，我学到的很多东西都藏在肚子里，最后烂在肚子里了，也就白学了。因此，我决定，未来4个月好好总结和回顾过去学到的东西，并且以专题的形式总结和分享出来(尽最大努力酿酒，巷子深浅与否看造化了)。</p>
@@ -475,7 +522,7 @@
 </li>
 <li><p><a href="http://wantedonline.cn/2016/10/29/20161029-1">理解Java内存模型(JMM)</a><br><br>继续深入，理解JMM</p>
 </li>
-<li><p>J.U.C概述<br><br>JDK并发工具包介绍,从该包的结构以及功能上做一个概述，为后面的分解铺垫思路</p>
+<li><p><a href="http://wantedonline.cn/2016/11/12/20161112">J.U.C概述</a><br><br>JDK并发工具包介绍,从该包的结构以及功能上做一个概述，为后面的分解铺垫思路</p>
 </li>
 <li><p>深入J.U.C中的锁<br><br> 深入分析Java语言层面提供的锁机制以及实现原理，对比分析synchronized的异同和优劣</p>
 </li>
@@ -506,9 +553,9 @@
     
       <category term="并发编程" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
-      <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
-    
       <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
+    
+      <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
     
   </entry>
   
@@ -1061,48 +1108,6 @@ public class DirectOOM {
       <category term="架构分析" scheme="http://wantedonline.cn/tags/%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90/"/>
     
       <category term="内存溢出" scheme="http://wantedonline.cn/tags/%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>基于LinkedList实现的固定大小线性排序数据结构</title>
-    <link href="http://wantedonline.cn/2016/07/06/base_linkedlist_data_structure20160706/"/>
-    <id>http://wantedonline.cn/2016/07/06/base_linkedlist_data_structure20160706/</id>
-    <published>2016-07-06T09:52:28.000Z</published>
-    <updated>2016-07-16T14:52:25.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3>概要：</h3><br>本文详细讲解了在Java中使用LinkedList实现一种可以设置固定大小的线性集合，该集合线程安全，需要达到业务的最优性能。<br><br><a id="more"></a><br><br><h3>1. 缘起</h3><br>最近工作过程中碰到一个做周期性更新排行榜的需求。涉及的数据字段和记录条数非常多。概括如下：<br>1. 数据分布于后台数据库100张数据表中；<br>2. 每张表的数据更新非常快，每天预估数据增量在1W条左右；<br>3. 排行榜的数据生成来源于这100张表中，只取前面100条；<br><br>约束：<br><br>- 数据库服务目前只有一个主从，数据周期性变化，原始数据必须放MySQL持久化，不能放Redis<br>- 尽可能减少数据库连接获取，尽可能减少数据库查询，这些昂贵的资源必须优先保证核心业务<br><br><h3>2. 基本思路</h3><br>如果数据量比较少，我们直接放到一个List然后调用Collections.sort排序即可。但是假如我们的排行榜要求的数据量是1W或者10W，每条记录按1KB的大小计算，那么100张表的数据量就是100<em>10W</em>1KB，服务器内存早就爆表。显然这种方案是不行的。<br><br>我们需要这样一种结构，每次一张数据库表中查出前m条记录，将这m条记录插入到一个容器中，这个容器会自动将这m条记录按大小排序，从另外一张表中查出m条记录，继续放到这个容器，容器依然能保证从大到小存储前m条记录。<br><br>这就好像一个擂台，我们可以设置这个擂台大小。每次放到擂台的选手，经过比赛之后，自动从大到小排好序，如果超过擂台大小，排在后面的选手自动淘汰。新加进来的选手可以来踢馆，最终强者留下。如果擂台大小还有剩余，可以容纳更多的选手。直到达到擂台大小就进入淘汰赛。<br><br>同时，还有一个需求，我们100张表可以用100个线程一次查询出来，因此这个容器必须线程安全。同时，性能要好。<br><br>纵观JDK的集合包，似乎没有现成的数据结构可以用。那是否可以直接使用J.U.C包中线程安全的集合？理论上是可以的。通过组合比如LinkedBlockingQueue，PriorityBlockingQueue或其他线程安全的数据结构。问题是我们还要时刻保持有序，大小固定这两个要求，隐含一个性能要好的隐形需求。如果直接使用线程安全的集合，显然还要额外加锁，两把锁以上的数据结构有可能存在死锁问题。<br><br>与其苦苦死锁寻找JDK给我们的馅饼，还不如自己动手，丰衣足食。即便重复写的轮子不如大师的轮子，但是先写一个放到测试环境跑一跑，只要大流程不出问题，还是不会给公司带来损失，发现小bug后面再慢慢优化就是。<br><br><h3>3. 初步实现</h3><br>首先，这个擂台比如增删频繁，因此使用链式结构是最优选。容器的元素一开始就有序，并且后面新加的元素要有序，使用插入排序是最优选，后面新加元素要找到合适的插入位置。就必定要和容器中的元素打擂，但并没必要一一比赛，因为容器的元素已经是有序的了。这时候使用二分查找寻找待插入元素的位置便是最优解。<br><br>插入：O(1),使用链表，无需移动元素<br>二分查找: O(lgn)<br>遍历集合: O(n)<br><br>我们JDK提供的集合排序会根据数据量规模自动选择排序算法，最优性能是O(nlgn),因为集合中的元素一开始是无序的。因此相比较而言，理论上我们的集合性能上要优于直接使用JDK提供的排序方法。<br><br>元素类型不确定，比较依据也不确定，固定大小可以由使用者设置，一旦设置就不能更改。因此这里必须使用泛型，同时由用户传入一个比较器，可以使用匿名内部类。同时传入一个固定大小。容器内部每添加一个元素前都要判断，当前是否已经达到擂台大小，如果新加入的元素超出了擂台大小，则必须进入淘汰赛，将最小元素淘汰。当然，维护从大到小还是从小到大可以通过比较器的返回值决定，这里我的需求是从大到小。<br><br>综合以上的条件，我们可以动手写代码了。<br><br><h3>4. 核心实现</h3>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArenaList</span>&lt;<span class="title">E</span>&gt; </span>&#123;</div><div class="line"><span class="comment">/*the arena capacity*/</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> capacity;</div><div class="line"><span class="comment">/*need user to define，int r = compare(e1, e2),when r &gt; 0，e1 &gt; e2,r = 0, e1 = e2, r &lt; 0, e1 &lt; e2*/</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Comparator&lt;E&gt; comparator;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> LinkedList&lt;E&gt; values;</div><div class="line"><span class="comment">/*if there is an element in list e1, that e1 equal e2, which e2 is we want to add,</span></div><div class="line"> * if keepNewerElement is false,we will drop e2,else drop e1*/</div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> keepNewerElement;</div><div class="line"><span class="comment">/*at this moment,the element count, when eCount &lt; size, we can add new element into list and will not remove the last element*/</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> eCount = <span class="number">0</span>;</div></pre></td></tr></table></figure>
-<p>容器定义的字段如上代码所示，<br>capacity必须在构造函数中传入，一旦初始化之后就不能更改。同时以后可能会实现序列化，虽然现在没有考虑序列化问题。<br>comparator是用户定义的比较器，也必须在构造时初始化。我们约定，调用比较器的compare(e1, e2)比较元素，当返回值r &gt; 0，表示e1 &gt; e2,当r &lt; 0,表示e1 &lt; e2。r = 0则表示元素相等。<br>values是存储元素的最终容器，因为增删频繁，因此使用链表，初始化之后就不能更改；<br>keepNewerElement是这样一个作用，当排在最后的两个元素en和em，如果en = em,em是待加入元素，并且擂台已满，是否用新加入的淘汰旧的。默认这个开关是false。<br>eCount，表示当前容器中添加了多少元素。当擂台没有满时，eCount &lt; size，当擂台满了的时候 eCount = size。这里加了volatile修饰，是为了保证多线程下该变量的可见性。这里不深入探讨Java并发问题，因为这个问题要说清楚可以另开一篇文章来说。简单的说volatile是轻量级同步锁，可能保证变量的可见性但不能保证原子性。同时保证了一些可能引发潜在问题的重排序问题。这些涉及到Java内存模型(JMM)，不在多说。这里没有用J.U.C包下的原子变量是因为我们这里容器的增删也要加锁，为了更好的性能，就没必要CAS自旋消耗性能。</p>
-<p>提供的两个构造函数：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArenaList</span><span class="params">(<span class="keyword">int</span> capacity, Comparator&lt;E&gt; comparator)</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (capacity &lt;= <span class="number">0</span>) &#123;</div><div class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"size can't be negative number"</span>);</div><div class="line">       &#125;</div><div class="line">       </div><div class="line">       <span class="keyword">this</span>.capacity = capacity;</div><div class="line">       <span class="keyword">this</span>.comparator = comparator;</div><div class="line">       <span class="keyword">this</span>.keepNewerElement = <span class="keyword">false</span>;</div><div class="line">       <span class="keyword">this</span>.values = <span class="keyword">new</span> LinkedList&lt;E&gt;();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
-<p>默认keepNewerElement是false，我们也可以自定义为true<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArenaList</span><span class="params">(<span class="keyword">int</span> capacity, Comparator&lt;E&gt; comparator, <span class="keyword">boolean</span> keepNewerElement)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (capacity &lt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"size can't be negative number"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">this</span>.capacity = capacity;</div><div class="line">    <span class="keyword">this</span>.comparator = comparator;</div><div class="line">    <span class="keyword">this</span>.keepNewerElement = keepNewerElement;</div><div class="line">    <span class="keyword">this</span>.values = <span class="keyword">new</span> LinkedList&lt;E&gt;();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个容器中，凡是涉及到容器的增删操作都要考虑线程安全问题。因此都要加锁。锁的实现也有好多种。比如粗粒度的方法锁，或JDK提供的可重入锁(ReentrantLock)。但隐含的性能要求最好时将临界区保持最小。同时代码简洁，因此这里我选用了synchronized对象锁。以values作为锁对象。</p>
-<p>添加删除元素的部分代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * add e into list with thread-safe</div><div class="line"> * <span class="doctag">@param</span> e</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == e) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Null Element."</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">synchronized</span> (values) &#123;</div><div class="line">        <span class="keyword">int</span> index = findElementIndex(e);</div><div class="line">        <span class="keyword">if</span> (values.size() &gt;= capacity) &#123;</div><div class="line">            <span class="keyword">if</span> (keepNewerElement &amp;&amp; index &lt;= values.size()) &#123;</div><div class="line">                values.removeLast();</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; values.size())&#123;</div><div class="line">                <span class="comment">//e is in the middle of this list</span></div><div class="line">                values.removeLast();</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">//e is at the end of this list and e equals the minElement, no need to add.</span></div><div class="line">                <span class="keyword">return</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        values.add(index, e);</div><div class="line">        eCount++;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>删除元素:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * remove e from list with thread-safe</div><div class="line"> * <span class="doctag">@param</span> e</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == e) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Null Element."</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">synchronized</span> (values) &#123;</div><div class="line">        <span class="keyword">if</span>(values.remove(e)) &#123;</div><div class="line">            eCount--;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>寻找待插入元素元素采用的算法是二分查找，这个算法原理非常简单，但是陷阱非常多，一不小心就会陷入死循环。我还记得当年我大学毕业处女面BAT中某一家，面试官让我写个二分查找。我三下五除二洋洋洒洒写完了，完全手写，没办法测试。估计当时肯定有bug。反正最终挂了。这个算法还真不是那么简单，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * find the index of e should be</div><div class="line"> * <span class="doctag">@param</span> e</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">findElementIndex</span><span class="params">(E e)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> (values.size() == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">return</span> index;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//values.size() &gt; 0</span></div><div class="line">    E minElement = values.getLast();</div><div class="line">    <span class="comment">//the largest element at the index of 0</span></div><div class="line">    <span class="keyword">int</span> high = values.lastIndexOf(minElement);</div><div class="line">    </div><div class="line">    E maxElement = values.getFirst();</div><div class="line">    <span class="comment">//the least element at the index of values.size() - 1</span></div><div class="line">    <span class="keyword">int</span> low = values.indexOf(maxElement);</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (compareTwoElement(minElement, e) &gt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">//minElement &gt;= e</span></div><div class="line">        index = high + <span class="number">1</span>;</div><div class="line">        <span class="keyword">return</span> index;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (compareTwoElement(maxElement, e) &lt;= <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">//maxElement &lt;= e</span></div><div class="line">        <span class="keyword">return</span> index;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//only one element</span></div><div class="line">    <span class="keyword">if</span> (low == high) &#123;</div><div class="line">        <span class="keyword">if</span> (capacity == <span class="number">1</span>) &#123;</div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (compareTwoElement(minElement, e) &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//minElement &gt; e</span></div><div class="line">            index = high + <span class="number">1</span>;</div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (compareTwoElement(minElement, e) &lt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//minElement &lt; e</span></div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//minElement = maxElement = e</span></div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">//more than one element and e must at the middle of this list,use binary search to find index</span></div><div class="line">    <span class="keyword">int</span> middle = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</div><div class="line">        middle = (low + high) / <span class="number">2</span>;</div><div class="line">        E minddleE = values.get(middle);</div><div class="line">        <span class="keyword">if</span> (compareTwoElement(minddleE, e) == <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//find it.</span></div><div class="line">            index = middle;</div><div class="line">            <span class="keyword">return</span> index;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (compareTwoElement(minddleE, e) &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">//middleE &gt; e</span></div><div class="line">            low = middle;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//middleE &lt; e</span></div><div class="line">            high = middle;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (high - low == <span class="number">1</span>) &#123;</div><div class="line">            <span class="comment">//if there only two element, e is in the middle of this list,low will never be higher or equal high</span></div><div class="line">            <span class="comment">//at this moment,should check out</span></div><div class="line">            <span class="comment">//[4,2,1],3 need to insert into it or [4,3,1],2 need to insert into it</span></div><div class="line">            <span class="keyword">return</span> low + <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="comment">//at this moment,low &gt;= high,and (middle + 1)is we should find</span></div><div class="line">    index = middle + <span class="number">1</span>;</div><div class="line">    <span class="keyword">return</span> index;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这里注意的是，容器中，大的元素在index为0，因此low表示大元素，high表示小元素。这点有悖于约定俗称。当只剩一个元素比较时就要特别注意了。</p>
-<h3>5. 总结</h3><br>到这里，基本分析完了。我写过测试用例，尝试过使用100个线程来添加元素。目前业务上似乎没有问题。<br><br>这个容器的原理非常简单，涉及的知识点也不算难。都是大学学过的。但是真正写起来却花费了很多时间。需要想各种测试场景写各种测试代码。到现在我完全没有信心说这个容器没有任何bug。但目前基本能满足我们的业务需求。Java并发是一门非常精深非常有意思的学问。很多时候我们写出的代码功能是符合要求，但是性能上本来可以做到更好的。其中并发就是一门需要丰富的经验和钻研才能写出高并发高性能程序的学问。在这条路上，我才刚刚起步。<br><br>所有代码开源，可以自由使用。欢迎提出bug或更好的意见。特别是并发优化部分。<br><br>源码下载：<a href="https://github.com/34benma/MyTools/blob/master/src/com/util/ArenaList.java" title="https://github.com/34benma/MyTools/blob/master/src/com/util/ArenaList.java" target="_blank" rel="external">https://github.com/34benma/MyTools/blob/master/src/com/util/ArenaList.java</a><br><br><h3>6. 参考资料</h3>
-
-<ul>
-<li><a href="http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/java/util/LinkedList.java#LinkedList" target="_blank" rel="external">http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/java/util/LinkedList.java#LinkedList</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3&gt;概要：&lt;/h3&gt;&lt;br&gt;本文详细讲解了在Java中使用LinkedList实现一种可以设置固定大小的线性集合，该集合线程安全，需要达到业务的最优性能。&lt;br&gt;&lt;br&gt;
-    
-    </summary>
-    
-      <category term="基础技术" scheme="http://wantedonline.cn/categories/%E5%9F%BA%E7%A1%80%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
-    
-      <category term="数据结构" scheme="http://wantedonline.cn/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
   </entry>
   

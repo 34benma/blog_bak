@@ -86,7 +86,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="随笔,心情," />
+  <meta name="keywords" content="并发,J.U.C," />
 
 
 
@@ -102,19 +102,19 @@
 
 
 
-<meta name="description" content="我的个人博客终于搭建好了~ :)
-我承认我不是一个特别爱写作的人。大学毕业前还时不时地写点技术文章，或在QQ空间发点感悟或者牢骚~工作之后，就很少写东西了。不是因为工作太忙，其实是因为患上了拖延症。">
+<meta name="description" content="前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。
+J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了一个专门用于简化并发编程的工具包，这个工具包就是J.U.C。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="良好的开始">
-<meta property="og:url" content="http://wantedonline.cn/2016/07/06/good_start20160706/index.html">
+<meta property="og:title" content="J.U.C概述">
+<meta property="og:url" content="http://wantedonline.cn/2016/11/12/20161112/index.html">
 <meta property="og:site_name" content="技术家园">
-<meta property="og:description" content="我的个人博客终于搭建好了~ :)
-我承认我不是一个特别爱写作的人。大学毕业前还时不时地写点技术文章，或在QQ空间发点感悟或者牢骚~工作之后，就很少写东西了。不是因为工作太忙，其实是因为患上了拖延症。">
-<meta property="og:updated_time" content="2016-07-16T14:52:25.000Z">
+<meta property="og:description" content="前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。
+J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了一个专门用于简化并发编程的工具包，这个工具包就是J.U.C。">
+<meta property="og:updated_time" content="2016-11-12T09:06:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="良好的开始">
-<meta name="twitter:description" content="我的个人博客终于搭建好了~ :)
-我承认我不是一个特别爱写作的人。大学毕业前还时不时地写点技术文章，或在QQ空间发点感悟或者牢骚~工作之后，就很少写东西了。不是因为工作太忙，其实是因为患上了拖延症。">
+<meta name="twitter:title" content="J.U.C概述">
+<meta name="twitter:description" content="前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。
+J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了一个专门用于简化并发编程的工具包，这个工具包就是J.U.C。">
 
 
 
@@ -132,7 +132,7 @@
   };
 </script>
 
-  <title> 良好的开始 | 技术家园 </title>
+  <title> J.U.C概述 | 技术家园 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -301,7 +301,7 @@
             
             
               
-                良好的开始
+                J.U.C概述
               
             
           </h1>
@@ -313,8 +313,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-06T13:23:55+08:00" content="2016-07-06">
-              2016-07-06
+            <time itemprop="dateCreated" datetime="2016-11-12T17:04:22+08:00" content="2016-11-12">
+              2016-11-12
             </time>
           </span>
 
@@ -327,8 +327,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">随笔</span>
+                  <a href="/categories/深入理解/" itemprop="url" rel="index">
+                    <span itemprop="name">深入理解</span>
                   </a>
                 </span>
 
@@ -343,8 +343,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/07/06/good_start20160706/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/06/good_start20160706/" itemprop="commentsCount"></span>
+                <a href="/2016/11/12/20161112/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/12/20161112/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -367,14 +367,28 @@
       
 
       
-        <p>我的个人博客终于搭建好了~ :)</p>
-<p>我承认我不是一个特别爱写作的人。大学毕业前还时不时地写点技术文章，或在QQ空间发点感悟或者牢骚~工作之后，就很少写东西了。不是因为工作太忙，其实是因为患上了拖延症。</p>
+        <p>前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。</p>
+<p>J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了一个专门用于简化并发编程的工具包，这个工具包就是J.U.C。</p>
 <a id="more"></a>
-<p>曾经几次想写一个自己的博客网站。觉得这才体现我攻(cheng)城(xu)狮(yuan)身份的优越性，尝试过几回，最终都半途而废了。这件事情想起来简单其实做起来还真不简单。</p>
-<p>一次偶然的机会发现了<a href="https://hexo.io/zh-cn/" target="_blank" rel="external">Hexo</a>，了解到可以将一个静态网站免费部署到<a href="https://github.com/34benma/34benma.github.io" target="_blank" rel="external">github</a>上。终于搭建好了自己的博客网站~</p>
-<p>在这个网站上，我将分享我再技术学习和平常工作中的一些有价值的东西。在孤单无聊(单身狗的日常生活)的时候写一写心情和人生感悟吧。</p>
-<p>希望以这个网站为起点，能更多地激励我，鞭策我在技术这条路上越走越远，分享更多的有价值的东西。</p>
-<p>这是一个良好的开始~</p>
+<p>业界有一句话说’并发不知<a href="http://g.oswego.edu" target="_blank" rel="external">Doug Lea</a>，学尽Java也枉然’。事实上，J.U.C的整个设计以及中间很多类的编写都是Doug Lea。上面链接是他的主页。他还编写了一本书叫做<java并发编程实践>.这本书对于Java程序员研究并发编程的理论与实践绝对帮助很大。</java并发编程实践></p>
+<h2>Executors类</h2>
+
+<p>这个包主要提供了一些线程池的工具类。事实上，创建线程和销毁线程都是一些消耗比较大的操作。因此J.U.C提供了这样一些类来简化线程的创建和销毁以及管理。主要有这么四中线程池：newCachedThreadPool，可缓存的线程池。它的用法是当我们希望创建的线程使用完之后不要马上销毁，可以给下一个任务去使用。因此可以将这些线程缓存起来重用。这样就节省了线程频繁创建于销毁带来的开支；newFixedThreadPool，固定大小的线程池。如果我们的任务数固定，而且可以确定线程数量使用这种线程池就比较好。不会有资源的浪费；newScheduledThreadPool，可调度的线程池。有一些任务我们希望在某个时间点或者某种频率触发，就可以使用这种线程池；newSingleThreadExecutor,单个线程的线程池。这种线程池一般用于任务数比较少，可以固定一个线程来执行。生产实践中我个人还是很少用到。</p>
+<p>跟线程池相关的自然是任务。J.U.C简化了我们创建和销毁以及管理线程的步骤，我们要做的只是将可以并行化的部分抽象出任务，写好task类即可。而task又可以带返回值和不带返回值。这些是通过Future等类实现。同时，在这个Executors框架里还提供了ForkJoin机制的实现类，用于工作窃取机制算法的实现。关于这个算法的原理，可以参考这个<a href="">文档</a>。涉及到线程池，涉及到任务，自然就会牵扯到很多东西，比如任务队列，优先级，启动和中断等。这些都定义在Executors这个框架里。</p>
+<h2>并发集合类</h2>
+
+<p>J.U.C提供了非常丰富的线程安全的集合类。比如队列，Map,List等数据结构。其中生产实践中用的最多的恐怕是ConcurrentHashMap了。这个类型的Map的详细介绍后面会有。它是一个线程安全的HashMap，但是性能比直接用HashTable或者同步化包装的HashMap高很多。原因需要看这个类的实现才能理解。根据不同的适用场景，提供了非常丰富的集合类供程序员适用。</p>
+<h2>原子信号量工具类</h2>
+
+<p>锁，信号量等在Java代码层面实现了。而且J.U.C提供的Lock类更加灵活，据说性能已经开始超过synchonized等关键字了。同时提供了一些信号量用于实现一些比如流控或者自定义锁等功能。</p>
+<h2>原子基本类</h2>
+
+<p>对于int,long，double等一些基本类，提供了一些对应的原子类的实现。这些类的线程安全保证是通过无锁化的CAS操作实现的。详细的后面的文章也会介绍。</p>
+<p>同时还有一些比如TimeUnit等工具类。</p>
+<h2>总结</h2>
+
+<p>J.U.C给Java程序员实现并发编程带来了极大的便利，因为并发编程本来就是一项比较复杂难以测试的事情，因此虽然J.U.C已经最大程度上简化了程序员的工作，但还是需要程序员对并发编程的理论非常熟悉，经历过很多次实践才能用好并发编程带来性能效率上的提升。</p>
+<p><a href="http://wantedonline.cn/2016/09/08/20160908-1/">专题目录</a></p>
 
       
     </div>
@@ -396,9 +410,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/随笔/" rel="tag">#随笔</a>
+            <a href="/tags/并发/" rel="tag">#并发</a>
           
-            <a href="/tags/心情/" rel="tag">#心情</a>
+            <a href="/tags/J-U-C/" rel="tag">#J.U.C</a>
           
         </div>
       
@@ -407,13 +421,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/11/08/20161108/" rel="next" title="软件开发日常思考(二)">
+                <i class="fa fa-chevron-left"></i> 软件开发日常思考(二)
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/06/base_linkedlist_data_structure20160706/" rel="prev" title="基于LinkedList实现的固定大小线性排序数据结构">
-                基于LinkedList实现的固定大小线性排序数据结构 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -428,10 +442,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/07/06/good_start20160706/"
-     data-title="良好的开始"
+        <div class="ds-share flat" data-thread-key="2016/11/12/20161112/"
+     data-title="J.U.C概述"
      data-content=""
-     data-url="http://wantedonline.cn/2016/07/06/good_start20160706/">
+     data-url="http://wantedonline.cn/2016/11/12/20161112/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -458,8 +472,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/07/06/good_start20160706/"
-           data-title="良好的开始" data-url="http://wantedonline.cn/2016/07/06/good_start20160706/">
+      <div class="ds-thread" data-thread-key="2016/11/12/20161112/"
+           data-title="J.U.C概述" data-url="http://wantedonline.cn/2016/11/12/20161112/">
       </div>
     
   </div>
@@ -602,7 +616,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">Executors类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">并发集合类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">原子信号量工具类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">原子基本类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
