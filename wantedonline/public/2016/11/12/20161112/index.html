@@ -110,7 +110,7 @@ J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了�
 <meta property="og:site_name" content="技术家园">
 <meta property="og:description" content="前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。
 J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了一个专门用于简化并发编程的工具包，这个工具包就是J.U.C。">
-<meta property="og:updated_time" content="2016-11-12T09:06:51.000Z">
+<meta property="og:updated_time" content="2016-11-12T09:14:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="J.U.C概述">
 <meta name="twitter:description" content="前面几篇基本说的是并发理论性的东西。除了很简单的介绍了一下synchonized和volatile两个关键字。从本篇开始，还是继续介绍一些理论性的东西。不过这些理论上的东西不同于前面。而是实实在在的工具类。
@@ -374,7 +374,7 @@ J.U.C是java.util.concurrent.*的简写。从JDK 1.5开始，JDK开始提供了�
 <h2>Executors类</h2>
 
 <p>这个包主要提供了一些线程池的工具类。事实上，创建线程和销毁线程都是一些消耗比较大的操作。因此J.U.C提供了这样一些类来简化线程的创建和销毁以及管理。主要有这么四中线程池：newCachedThreadPool，可缓存的线程池。它的用法是当我们希望创建的线程使用完之后不要马上销毁，可以给下一个任务去使用。因此可以将这些线程缓存起来重用。这样就节省了线程频繁创建于销毁带来的开支；newFixedThreadPool，固定大小的线程池。如果我们的任务数固定，而且可以确定线程数量使用这种线程池就比较好。不会有资源的浪费；newScheduledThreadPool，可调度的线程池。有一些任务我们希望在某个时间点或者某种频率触发，就可以使用这种线程池；newSingleThreadExecutor,单个线程的线程池。这种线程池一般用于任务数比较少，可以固定一个线程来执行。生产实践中我个人还是很少用到。</p>
-<p>跟线程池相关的自然是任务。J.U.C简化了我们创建和销毁以及管理线程的步骤，我们要做的只是将可以并行化的部分抽象出任务，写好task类即可。而task又可以带返回值和不带返回值。这些是通过Future等类实现。同时，在这个Executors框架里还提供了ForkJoin机制的实现类，用于工作窃取机制算法的实现。关于这个算法的原理，可以参考这个<a href="">文档</a>。涉及到线程池，涉及到任务，自然就会牵扯到很多东西，比如任务队列，优先级，启动和中断等。这些都定义在Executors这个框架里。</p>
+<p>跟线程池相关的自然是任务。J.U.C简化了我们创建和销毁以及管理线程的步骤，我们要做的只是将可以并行化的部分抽象出任务，写好task类即可。而task又可以带返回值和不带返回值。这些是通过Future等类实现。同时，在这个Executors框架里还提供了ForkJoin机制的实现类，用于工作窃取机制算法的实现。关于这个算法的原理，可以参考这个<a href="http://ifeve.com/fork-join-1/" target="_blank" rel="external">文档</a>。涉及到线程池，涉及到任务，自然就会牵扯到很多东西，比如任务队列，优先级，启动和中断等。这些都定义在Executors这个框架里。</p>
 <h2>并发集合类</h2>
 
 <p>J.U.C提供了非常丰富的线程安全的集合类。比如队列，Map,List等数据结构。其中生产实践中用的最多的恐怕是ConcurrentHashMap了。这个类型的Map的详细介绍后面会有。它是一个线程安全的HashMap，但是性能比直接用HashTable或者同步化包装的HashMap高很多。原因需要看这个类的实现才能理解。根据不同的适用场景，提供了非常丰富的集合类供程序员适用。</p>
