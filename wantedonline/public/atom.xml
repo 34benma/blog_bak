@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wantedonline.cn/"/>
-  <updated>2016-12-11T07:09:36.000Z</updated>
+  <updated>2016-12-18T14:28:04.000Z</updated>
   <id>http://wantedonline.cn/</id>
   
   <author>
@@ -14,6 +14,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>无他,先占个坑</title>
+    <link href="http://wantedonline.cn/2016/12/18/20161218/"/>
+    <id>http://wantedonline.cn/2016/12/18/20161218/</id>
+    <published>2016-12-18T14:26:24.000Z</published>
+    <updated>2016-12-18T14:28:04.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后取元素。一开始以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。</p>
+<a id="more"></a>
+<p>嗯，计划好好研究下这个算法。先占个坑，等我研究透了再分享。之所以现在写这个东西在这里，原因有二，一是提醒自己还有件事情没做完，拖延症晚期<del>~二是12月份还有一个指标没有完成</del>无他~</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后取元素。一开始以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="随笔" scheme="http://wantedonline.cn/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+      <category term="乱七八糟" scheme="http://wantedonline.cn/tags/%E4%B9%B1%E4%B8%83%E5%85%AB%E7%B3%9F/"/>
+    
+      <category term="拖延症" scheme="http://wantedonline.cn/tags/%E6%8B%96%E5%BB%B6%E7%97%87/"/>
+    
+  </entry>
   
   <entry>
     <title>你到现在还找不到对象，一定是很&#39;挑&#39;吧</title>
@@ -703,9 +732,9 @@
     
       <category term="并发编程" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
-      <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
-    
       <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
+    
+      <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
     
   </entry>
   
@@ -940,36 +969,6 @@
       <category term="高并发" scheme="http://wantedonline.cn/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/"/>
     
       <category term="分布式" scheme="http://wantedonline.cn/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>周末随笔</title>
-    <link href="http://wantedonline.cn/2016/07/23/weekend-article-1/"/>
-    <id>http://wantedonline.cn/2016/07/23/weekend-article-1/</id>
-    <published>2016-07-23T05:39:10.000Z</published>
-    <updated>2016-08-07T15:26:14.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>生活不是诗，不能活在文艺的情怀里，生活大部分都是在柴米油盐酱醋茶中走过。</p>
-<a id="more"></a>
-<p>20岁的时候特别喜欢赵雷的歌，而现在25岁，特别喜欢李志的歌~</p>
-<p>这5年里，蜕掉了一些稚气，增添了一些责任和想法。满嘴胡言乱语和自我嘲笑中隐藏了一些无人诉说又无人可懂的无奈和辛酸。</p>
-<p>留恋一座城市，大部分原因是因为那里有一些人和事吧~</p>
-<embed type="video/mp4" allowscriptaccess="always" allowfullscreen="true" wmode="transparent" quality="high" height="480" width="700" src="http://o9z6i1a1s.bkt.clouddn.com/%E6%9D%8E%E5%BF%97%20-%20%E5%85%B3%E4%BA%8E%E9%83%91%E5%B7%9E%E7%9A%84%E8%AE%B0%E5%BF%86.mp4"> 
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;生活不是诗，不能活在文艺的情怀里，生活大部分都是在柴米油盐酱醋茶中走过。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="随笔" scheme="http://wantedonline.cn/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
-    
-      <category term="心情" scheme="http://wantedonline.cn/tags/%E5%BF%83%E6%83%85/"/>
     
   </entry>
   
