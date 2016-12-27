@@ -86,7 +86,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="JVM,垃圾回收," />
+  <meta name="keywords" content="技术博客, 王诚, 技术, 生活" />
 
 
 
@@ -102,19 +102,15 @@
 
 
 
-<meta name="description" content="Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Java垃圾回收三大问">
-<meta property="og:url" content="http://wantedonline.cn/2016/07/12/jvm-gc-desc/index.html">
+<meta name="description" content="王诚的个人博客网站,记录一个码农的技术成长和生活情怀">
+<meta property="og:type" content="website">
+<meta property="og:title" content="技术家园">
+<meta property="og:url" content="http://wantedonline.cn/tags/基础技术/index.html">
 <meta property="og:site_name" content="技术家园">
-<meta property="og:description" content="Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。">
-<meta property="og:image" content="http://o9z6i1a1s.bkt.clouddn.com/gcthread.png">
-<meta property="og:image" content="http://o9z6i1a1s.bkt.clouddn.com/gcthread2.png">
-<meta property="og:updated_time" content="2016-07-16T14:52:25.000Z">
+<meta property="og:description" content="王诚的个人博客网站,记录一个码农的技术成长和生活情怀">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java垃圾回收三大问">
-<meta name="twitter:description" content="Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。">
-<meta name="twitter:image" content="http://o9z6i1a1s.bkt.clouddn.com/gcthread.png">
+<meta name="twitter:title" content="技术家园">
+<meta name="twitter:description" content="王诚的个人博客网站,记录一个码农的技术成长和生活情怀">
 
 
 
@@ -132,7 +128,7 @@
   };
 </script>
 
-  <title> Java垃圾回收三大问 | 技术家园 </title>
+  <title> 标签: 基础技术 | 技术家园 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -172,7 +168,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-right page-post-detail ">
+  <div class="container one-collumn sidebar-position-right  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -280,191 +276,46 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                Java垃圾回收三大问
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-12T11:18:09+08:00" content="2016-07-12">
-              2016-07-12
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/深入理解/" itemprop="url" rel="index">
-                    <span itemprop="name">深入理解</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/07/12/jvm-gc-desc/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/12/jvm-gc-desc/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。</p>
-<a id="more"></a>
-<h2>哪些内存需要回收？</h2>
-
-<p>根据JVM的架构，需要进行内存回收的区域事实上只有方法区和堆区。这两个区域都是线程共享的。其他像Java虚拟机栈，本地方法栈等不需要内存回收，因为他们是线程私有，而且是栈结构。当方法或线程执行完自动会将栈帧或栈结构释放掉。程序计数器也是线程私有，而且只是保存当前线程执行下一条指令的地址。所需要的内存很小而且固定。自然也不需要专门来进行内存管理。因此JVM中只有线程共用的Java堆和方法区需要进行垃圾回收。这些垃圾主要是类信息，常量，最多的应该是对象实例。</p>
-<h2>什么时候回收？</h2>
-
-<p>对象回收的时机必然是该对象首先要成为一个内存垃圾。事实上Java中对象存活的判断并不是用的引用计数算法(CPython等是引用计数算法)，而是用的可达性分析算法。这个算法简单的说就是讲某些常量或类变量当成根，如果从根开始到某个对象实例有可达的路径则该对象是存活的。如果某些对象和根不再有引用关系则认为这些对象已经是垃圾了，将在垃圾算法运行的时候被回收。Java是所以采用可达性分析算法的一个原因是解决循环引用的问题。引用计数算法对于循环引用无能为力。而可达性分析算法只要对象实例和根没有引用关系则认为是垃圾。即便循环引用也没有关系。</p>
-<p>那是不是只要对象实例对于根对象而言不可达就会被立马回收掉呢？事实上不是的。JVM专门有一个线程叫做GC线程，专门用于垃圾回收。如果是一旦发现垃圾立马回收，显然效率太低，将会严重降低JVM的吞吐量。如果采用定时扫描自然会好很多。</p>
-<p>因此，JVM中方法区也好，堆区也好。当有类对象或对象实例成为垃圾时，如果进入了垃圾回收区并被GC扫描到就会被回收。</p>
-<p>这个垃圾回收区在HotSpot里叫做安全点(Safepoint)，当程序执行到安全点时，将暂停下来(Stop The World)，执行GC。</p>
-<h2>如何回收？</h2>
-
-<p>说清楚了哪些内存需要回收，什么时候可以进行垃圾回收。就应该说一说JVM如何进行垃圾回收了。</p>
-<p>Java7的HotSpot的垃圾回收算法不止一个，根据不同的场景(JVM运行时-client模式还是-server模式，是在新生代，老年代还是方法区)有不同的回收算法。</p>
-<p><img src="http://o9z6i1a1s.bkt.clouddn.com/gcthread.png" alt="JDK7 HotSpot中的GC线程"><br><img src="http://o9z6i1a1s.bkt.clouddn.com/gcthread2.png" alt=""></p>
-<p>关于JVM中采用的各种回收算法，在Oracle的这篇<a href="https://blogs.oracle.com/jonthecollector/entry/our_collectors" target="_blank" rel="external">博客</a>中写的比较官方。</p>
-<p><strong>注:本文只适用于HotSpot Java7</strong></p>
-<p><em>参考文献</em></p>
-<p><em>《深入理解Java虚拟机》 –周志明著</em><br><em><a href="https://blogs.oracle.com/jonthecollector/entry/our_collectors" target="_blank" rel="external">https://blogs.oracle.com/jonthecollector/entry/our_collectors</a></em></p>
-
-      
+  <div id="posts" class="posts-collapse">
+    <div class="collection-title">
+      <h2 >
+        基础技术
+        <small>标签</small>
+      </h2>
     </div>
 
-    <div>
+    
       
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
         
-      
-    </div>
-
-    <div>
-      
+            <a class="post-title-link" href="/2016/12/27/20161227/" itemprop="url">
+              
+                <span itemprop="name">JDK中Collections的shuffle函数</span>
+              
+            </a>
         
+      </h1>
 
-      
-    </div>
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2016-12-27T21:02:03+08:00"
+              content="2016-12-27" >
+          12-27
+        </time>
+      </div>
 
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/JVM/" rel="tag">#JVM</a>
-          
-            <a href="/tags/垃圾回收/" rel="tag">#垃圾回收</a>
-          
-        </div>
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2016/07/08/java-new-anas-20160708/" rel="next" title="Java中当我们new一个对象时我们是在干啥？">
-                <i class="fa fa-chevron-left"></i> Java中当我们new一个对象时我们是在干啥？
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/16/what-is-life-meaning/" rel="prev" title="生活的意义">
-                生活的意义 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
+    </header>
   </article>
 
 
-
-    <div class="post-spread">
-      
-        <div class="ds-share flat" data-thread-key="2016/07/12/jvm-gc-desc/"
-     data-title="Java垃圾回收三大问"
-     data-content=""
-     data-url="http://wantedonline.cn/2016/07/12/jvm-gc-desc/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
+    
   </div>
-</div>
-      
-    </div>
-  </div>
+
+  
 
 
           </div>
@@ -472,14 +323,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2016/07/12/jvm-gc-desc/"
-           data-title="Java垃圾回收三大问" data-url="http://wantedonline.cn/2016/07/12/jvm-gc-desc/">
-      </div>
-    
-  </div>
-
 
         </div>
         
@@ -499,17 +342,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://o9z6i1a1s.bkt.clouddn.com/avatar.png"
@@ -612,17 +446,6 @@
       </section>
 
       
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">哪些内存需要回收？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">什么时候回收？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">如何回收？</span></a></li></ol></div>
-            
-          </div>
-        </section>
-      
 
     </div>
   </aside>
@@ -718,10 +541,6 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
-
 
   
 

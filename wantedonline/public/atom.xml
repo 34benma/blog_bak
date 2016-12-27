@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wantedonline.cn/"/>
-  <updated>2016-12-18T14:28:04.000Z</updated>
+  <updated>2016-12-27T13:04:07.000Z</updated>
   <id>http://wantedonline.cn/</id>
   
   <author>
@@ -14,6 +14,50 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JDK中Collections的shuffle函数</title>
+    <link href="http://wantedonline.cn/2016/12/27/20161227/"/>
+    <id>http://wantedonline.cn/2016/12/27/20161227/</id>
+    <published>2016-12-27T13:02:03.000Z</published>
+    <updated>2016-12-27T13:04:07.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后顺序取出元素。一开始我以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。特地研究了一下这个算法的实现。</p>
+<a id="more"></a>
+<p>洗牌函数的一些基本要求：</p>
+<ul>
+<li>元素数量有限</li>
+<li>每个元素出现在某个位置的概率都为1/n (n为元素总量)</li>
+<li>每次洗牌都是一个独立的事件</li>
+</ul>
+<p>基于上面的三个要求，我们希望洗牌函数时间复杂度和空间复杂度都能尽量最好。具体如何实现呢？</p>
+<h2>Collections的shuffle原理</h2>
+
+<p>Collections的shuffle函数时间复杂度和空间复杂度都是O(n)，性能较为优越。基本原理是这样的，遍历一遍集合，每一次迭代都将迭代的位置和一个随机的元素交换，因此这里关键在于如何选取随机元素下标。</p>
+<p>shuffle是这样处理的。每次以迭代的下标作为上界，保证每次随机数不超过下标即可。这样就保证了已经迭代过的元素位置固定不变，只随机交换未迭代的元素，从而实现了每个元素在某个位置的概率都是1/n(n为元素总量)。每次调用该函数，自然都是一个独立的事件。因为不会因为初始元素排列的情况而影响到随机的结果。</p>
+<p>源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">shuffle</span><span class="params">(List&lt;?&gt; list, Random rnd)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> size = list.size();</div><div class="line">    <span class="keyword">if</span> (size &lt; SHUFFLE_THRESHOLD || list <span class="keyword">instanceof</span> RandomAccess) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=size; i&gt;<span class="number">1</span>; i--)</div><div class="line">            swap(list, i-<span class="number">1</span>, rnd.nextInt(i));</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        Object arr[] = list.toArray();</div><div class="line"></div><div class="line">        <span class="comment">// Shuffle array</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=size; i&gt;<span class="number">1</span>; i--)</div><div class="line">            swap(arr, i-<span class="number">1</span>, rnd.nextInt(i));</div><div class="line"></div><div class="line">        <span class="comment">// Dump array back into list</span></div><div class="line">        <span class="comment">// instead of using a raw type here, it's possible to capture</span></div><div class="line">        <span class="comment">// the wildcard but it will require a call to a supplementary</span></div><div class="line">        <span class="comment">// private method</span></div><div class="line">        ListIterator it = list.listIterator();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;arr.length; i++) &#123;</div><div class="line">            it.next();</div><div class="line">            it.set(arr[i]);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里需要说明的是，第一个if语句。SHUFFLE_THRESHOLD的值默认是5，这个值不可以更改。作用是当list元素小于5个时，直接交换，如果大于5个而且不支持随机访问，比如链表或hash等，则先将其转换成数组，支持随机访问。因为链表这种数据结构不支持随机访问。如果直接交换元素位置的话，时间复杂度将非常高。</p>
+<p>如果list支持随机访问，当然直接交换元素位置即可。否则转成数组之后再交换随机位置。</p>
+<h2>总结</h2>
+
+<p>一个看似有点复杂的逻辑，其实原理和实现都非常简单。关键在于随机位置的选取。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后顺序取出元素。一开始我以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。特地研究了一下这个算法的实现。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="基础技术" scheme="http://wantedonline.cn/categories/%E5%9F%BA%E7%A1%80%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="基础技术" scheme="http://wantedonline.cn/tags/%E5%9F%BA%E7%A1%80%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="洗牌算法" scheme="http://wantedonline.cn/tags/%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>无他,先占个坑</title>
@@ -732,9 +776,9 @@
     
       <category term="并发编程" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
-      <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
-    
       <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
+    
+      <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
     
   </entry>
   
@@ -900,75 +944,6 @@
       <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
     
       <category term="小诗" scheme="http://wantedonline.cn/tags/%E5%B0%8F%E8%AF%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>微型秒杀模型的几点思考</title>
-    <link href="http://wantedonline.cn/2016/08/04/20160804-1/"/>
-    <id>http://wantedonline.cn/2016/08/04/20160804-1/</id>
-    <published>2016-08-04T12:25:10.000Z</published>
-    <updated>2016-08-07T15:26:14.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近工作上做了几个抢票的活动。其中有一部分抢票活动非常火爆，用户访问量非常大。任何一个系统，只要涉及到高并发，分布式就会变得复杂起来。本文是我对这类问题的一些思考和总结。后面有时间还将分享关于流控模型的一些思考，敬请期待。<br><a id="more"></a></p>
-<h2>一 几点解释以及场景分析</h2>
-
-<h3>1.1 关于微型</h3>
-
-<p>微型并不是说并发量比较小或者逻辑比较简单。微型的意思是指库存比较小。而库存就是指我们要抢的东西的总量。当库存比较大的时候，架构和逻辑复杂度也会有相应的变化。</p>
-<h3>1.2 场景分析</h3>
-
-<p>我们有100个宝贝，这些宝贝非常抢手，很多人都想得到。但很显然，最终真正得到宝贝的人只有100个。如果出现了超过100个人购买成功了就是超卖，最终超卖的部分只能通过协商解决了。但是从发起购买到购买成功的过程中会有一个支付的过程。必须支付成功才能购买成功。因此如果库存的增减不恰当可能会出现假卖的情况。也就是有可能很多人同一时间购买，但大家都没有付款成功。后面的人来买的话提示没有库存了，事实上这些宝贝还没有卖出去，最终导致想要买宝贝的人没能买到。整个购买模型如下图所示：</p>
-<p><img src="http://o9z6i1a1s.bkt.clouddn.com/2016080401.png" alt=""></p>
-<p>这里的关键在于会异步调用第三方支付网站完成支付，在这个过程中，库存应该怎样减？在哪个步骤减？如何处理支付问题等很多问题会影响商品购买流程。</p>
-<h3>1.3 一种假设</h3>
-
-<p>如果我们的网站架构师单实例单库，很多问题会非常简单。我们可以通过加锁，限流，串行化等手段解决。但是这样的网站架构显然不满足高并发，分布式的要求，不能承受较大的点击量。因此，我们的秒杀模型都是基于多实例，分布式，Redis缓存，MySQL分表分库等架构。能够承受较大的并发。</p>
-<h2>二 几种秒杀模型分析</h2>
-
-<h3>2.1 在支付前扣减库存</h3>
-
-<p>为了防止超卖，我们可以在跳转到第三方支付进行支付之前扣减库存，这样可以有效防止商品因为超卖而导致的退款流程。但是很显然，这样会带来假卖的问题。假如一下子非常多的用户涌进来，他们占完了全部库存，但是迟迟不付款或者支付失败。导致后面的用户点击购买的时候提示没有库存而无法购买。一种稍微好点的办法是在支付成功时统计一下购买成功的总数，用总库存减去购买成功数得到剩余库存做一次修正。这样可以修正某些场景，但是如果有恶意用户，提交很多不支付的订单将库存消耗完(占着茅坑不拉屎),就会导致假卖问题。</p>
-<h3>2.2 在支付成功后减库存</h3>
-
-<p>为了防止2.1模型的假卖问题，我们将扣减库存问题放在支付成功后。这样可以解决假卖问题，但是会带来超卖问题。设想这样一种场景：大量用户点击购买，已经跳转到第三方支付网站进行支付，因为我们还没有获得支付结果，支付网关不会回调我们的支付完成逻辑，因此不会扣减库存。这样可以让无限的用户进入支付环节。最终如果这些用户全部支付成功显然会导致大量超卖的情况。</p>
-<h3>2.3 排队模型</h3>
-
-<p>联系到现实生活的场景，这样的问题最好的办法就是引入排队机制。排在前面的人可以成功购买，后面的人如果没有库存自然无法购买。大家按照时间顺序先后来，如果中间有人放弃，自然有后面的人顶替。这样自然保证了公平，公正。而且也不会出现超卖假卖问题。</p>
-<p>这个思路是对的，关键是如何实现的问题。</p>
-<h2> 三 实现排队模型</h2>
-
-<p>排队模型里有一个关键问题，就是锁票超时机制。比如我们买电影票，飞机票。都有一个锁票支付机制。超时之后如果没有完成支付则自动释放当前锁定的票资源，重新进入票池给别人购买。这样可以解决占着茅坑不拉屎的问题。</p>
-<h3>3.1 单实例模型</h3>
-
-<p>假如是单实例模型，我们可以将发起的请求全部放入一个数组，这个数组的长度就是宝贝数量(微型的意义在于宝贝数量较少，可以保证这里不会占用太多的空间)。启动一个线程，专门处理那些超时或者中途放弃的用户，以便让新用户能及时进入排队购买。但是假如这个线程挂掉或阻塞了，同样会导致假卖的问题。</p>
-<p>因此较好的办法就是设置自动超时的缓存，对于超时的用户自动清除，以便让后来的用户可以进入支付环节。这个缓存可以自己实现，也可以使用Guava。</p>
-<h3>3.2 多实例分布式模型</h3>
-
-<p>显然对于多实例分布式模型设置本地缓存是行不通的。多实例分布式的话可以借助Redis缓存。但是Redis缓存的超时都是以key为基础的。使用哪种缓存结构可以实现我们的需求？</p>
-<p>想来想去只有结合两种模式。Hash和String。使用String存放单个的用户，代表排队位。谁先支付完成谁就买到票。使用Hash统计排队人数。每次加入的时候，先遍历Hash，将因为超时失效的String用户剔除掉，这样就自然释放了资源。</p>
-<p>类似于这样：任何一个用户进来必须先获得一张入场券，这个入场券的有效时长是设定的超时时间。如果在这个时间内完成了支付，则购买成功。如果没有支付，则超时后下一名购买者进来的时候自动剔除，同时获得这张券。当一个用户购买成功后，释放这张券。每个用户进来的时候，都要保证当前发放的入场券总量不超过库存剩余总量。当发放的券总量等于库存剩余的时候，后面的人自然提示暂时没有空余票，稍后再试。</p>
-<p>这样我们就避免了另外开启线程来清除超时释放库存，也有效地在支付前控制了假卖，在很大几率上避免了超卖。但是存在一个问题，因为每个用户进来我们都要循环遍历一遍缓存，清理超时用户。因此库存不宜过大，否则循环耗时太长，用户体验不太好。</p>
-<h2>四 总结和拓展</h2>
-
-<p>对于秒杀模型，可能出现的问题就是假卖和超卖问题。而解决这个问题的办法就是排队和超时机制。如果我们的库存非常大(这样就不需要秒杀了)，在最后库存余量不是很大的情况下如果出现高并发没有排队和超时机制同样会出现超卖和假卖问题。为了保险起见，其实在运营手段上也应该采取一些办法，比如本来总共1000件商品，我只买980件，剩余20件用于补给超卖部分。考虑到用户体验和退款等，宁愿少卖也不多卖。当然这些应该根据具体的业务需求来决定。</p>
-<p>假如是库存非常大的情况，我们也可以考虑化大为小。在分布式环境下，将其平均分配，每台实例上卖一部分就将库存消化了。也可以引入大型排队系统和超时回调机制。当超时时自动触发一些业务流程。当然这些实现需要我们自己写很多代码，不能依赖Redis等缓存超时机制了。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近工作上做了几个抢票的活动。其中有一部分抢票活动非常火爆，用户访问量非常大。任何一个系统，只要涉及到高并发，分布式就会变得复杂起来。本文是我对这类问题的一些思考和总结。后面有时间还将分享关于流控模型的一些思考，敬请期待。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="深入理解" scheme="http://wantedonline.cn/categories/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
-    
-    
-      <category term="模式设计" scheme="http://wantedonline.cn/tags/%E6%A8%A1%E5%BC%8F%E8%AE%BE%E8%AE%A1/"/>
-    
-      <category term="高并发" scheme="http://wantedonline.cn/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/"/>
-    
-      <category term="分布式" scheme="http://wantedonline.cn/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
     
   </entry>
   

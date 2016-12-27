@@ -86,7 +86,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="JVM,垃圾回收," />
+  <meta name="keywords" content="基础技术,洗牌算法," />
 
 
 
@@ -102,19 +102,16 @@
 
 
 
-<meta name="description" content="Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。">
+<meta name="description" content="最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后顺序取出元素。一开始我以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。特地研究了一下这个算法的实现。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java垃圾回收三大问">
-<meta property="og:url" content="http://wantedonline.cn/2016/07/12/jvm-gc-desc/index.html">
+<meta property="og:title" content="JDK中Collections的shuffle函数">
+<meta property="og:url" content="http://wantedonline.cn/2016/12/27/20161227/index.html">
 <meta property="og:site_name" content="技术家园">
-<meta property="og:description" content="Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。">
-<meta property="og:image" content="http://o9z6i1a1s.bkt.clouddn.com/gcthread.png">
-<meta property="og:image" content="http://o9z6i1a1s.bkt.clouddn.com/gcthread2.png">
-<meta property="og:updated_time" content="2016-07-16T14:52:25.000Z">
+<meta property="og:description" content="最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后顺序取出元素。一开始我以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。特地研究了一下这个算法的实现。">
+<meta property="og:updated_time" content="2016-12-27T13:04:07.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java垃圾回收三大问">
-<meta name="twitter:description" content="Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。">
-<meta name="twitter:image" content="http://o9z6i1a1s.bkt.clouddn.com/gcthread.png">
+<meta name="twitter:title" content="JDK中Collections的shuffle函数">
+<meta name="twitter:description" content="最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后顺序取出元素。一开始我以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。特地研究了一下这个算法的实现。">
 
 
 
@@ -132,7 +129,7 @@
   };
 </script>
 
-  <title> Java垃圾回收三大问 | 技术家园 </title>
+  <title> JDK中Collections的shuffle函数 | 技术家园 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -301,7 +298,7 @@
             
             
               
-                Java垃圾回收三大问
+                JDK中Collections的shuffle函数
               
             
           </h1>
@@ -313,8 +310,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-12T11:18:09+08:00" content="2016-07-12">
-              2016-07-12
+            <time itemprop="dateCreated" datetime="2016-12-27T21:02:03+08:00" content="2016-12-27">
+              2016-12-27
             </time>
           </span>
 
@@ -327,8 +324,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/深入理解/" itemprop="url" rel="index">
-                    <span itemprop="name">深入理解</span>
+                  <a href="/categories/基础技术/" itemprop="url" rel="index">
+                    <span itemprop="name">基础技术</span>
                   </a>
                 </span>
 
@@ -343,8 +340,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/07/12/jvm-gc-desc/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/12/jvm-gc-desc/" itemprop="commentsCount"></span>
+                <a href="/2016/12/27/20161227/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/27/20161227/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -367,26 +364,26 @@
       
 
       
-        <p>Java语言的一大优势在于JVM自己管理内存。解决了程序中废弃对象的内存回收问题。不再需要程序员主动去申请和释放内存，从而避免很多恼人的内存泄露问题。但是哪些内存需要回收？什么时候回收？如何回收？这是JVM垃圾回收机制需要解决的三个问题。</p>
+        <p>最近工作上做了一个随机化的需求。类似于洗牌，需要将一个原本有序的东西打乱然后顺序取出元素。一开始我以为要自己写随机算法，后面发现JDK库中Collections提供了一个shuffle函数，就是干这个事情的。特地研究了一下这个算法的实现。</p>
 <a id="more"></a>
-<h2>哪些内存需要回收？</h2>
+<p>洗牌函数的一些基本要求：</p>
+<ul>
+<li>元素数量有限</li>
+<li>每个元素出现在某个位置的概率都为1/n (n为元素总量)</li>
+<li>每次洗牌都是一个独立的事件</li>
+</ul>
+<p>基于上面的三个要求，我们希望洗牌函数时间复杂度和空间复杂度都能尽量最好。具体如何实现呢？</p>
+<h2>Collections的shuffle原理</h2>
 
-<p>根据JVM的架构，需要进行内存回收的区域事实上只有方法区和堆区。这两个区域都是线程共享的。其他像Java虚拟机栈，本地方法栈等不需要内存回收，因为他们是线程私有，而且是栈结构。当方法或线程执行完自动会将栈帧或栈结构释放掉。程序计数器也是线程私有，而且只是保存当前线程执行下一条指令的地址。所需要的内存很小而且固定。自然也不需要专门来进行内存管理。因此JVM中只有线程共用的Java堆和方法区需要进行垃圾回收。这些垃圾主要是类信息，常量，最多的应该是对象实例。</p>
-<h2>什么时候回收？</h2>
+<p>Collections的shuffle函数时间复杂度和空间复杂度都是O(n)，性能较为优越。基本原理是这样的，遍历一遍集合，每一次迭代都将迭代的位置和一个随机的元素交换，因此这里关键在于如何选取随机元素下标。</p>
+<p>shuffle是这样处理的。每次以迭代的下标作为上界，保证每次随机数不超过下标即可。这样就保证了已经迭代过的元素位置固定不变，只随机交换未迭代的元素，从而实现了每个元素在某个位置的概率都是1/n(n为元素总量)。每次调用该函数，自然都是一个独立的事件。因为不会因为初始元素排列的情况而影响到随机的结果。</p>
+<p>源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">shuffle</span><span class="params">(List&lt;?&gt; list, Random rnd)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> size = list.size();</div><div class="line">    <span class="keyword">if</span> (size &lt; SHUFFLE_THRESHOLD || list <span class="keyword">instanceof</span> RandomAccess) &#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=size; i&gt;<span class="number">1</span>; i--)</div><div class="line">            swap(list, i-<span class="number">1</span>, rnd.nextInt(i));</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        Object arr[] = list.toArray();</div><div class="line"></div><div class="line">        <span class="comment">// Shuffle array</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=size; i&gt;<span class="number">1</span>; i--)</div><div class="line">            swap(arr, i-<span class="number">1</span>, rnd.nextInt(i));</div><div class="line"></div><div class="line">        <span class="comment">// Dump array back into list</span></div><div class="line">        <span class="comment">// instead of using a raw type here, it's possible to capture</span></div><div class="line">        <span class="comment">// the wildcard but it will require a call to a supplementary</span></div><div class="line">        <span class="comment">// private method</span></div><div class="line">        ListIterator it = list.listIterator();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;arr.length; i++) &#123;</div><div class="line">            it.next();</div><div class="line">            it.set(arr[i]);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里需要说明的是，第一个if语句。SHUFFLE_THRESHOLD的值默认是5，这个值不可以更改。作用是当list元素小于5个时，直接交换，如果大于5个而且不支持随机访问，比如链表或hash等，则先将其转换成数组，支持随机访问。因为链表这种数据结构不支持随机访问。如果直接交换元素位置的话，时间复杂度将非常高。</p>
+<p>如果list支持随机访问，当然直接交换元素位置即可。否则转成数组之后再交换随机位置。</p>
+<h2>总结</h2>
 
-<p>对象回收的时机必然是该对象首先要成为一个内存垃圾。事实上Java中对象存活的判断并不是用的引用计数算法(CPython等是引用计数算法)，而是用的可达性分析算法。这个算法简单的说就是讲某些常量或类变量当成根，如果从根开始到某个对象实例有可达的路径则该对象是存活的。如果某些对象和根不再有引用关系则认为这些对象已经是垃圾了，将在垃圾算法运行的时候被回收。Java是所以采用可达性分析算法的一个原因是解决循环引用的问题。引用计数算法对于循环引用无能为力。而可达性分析算法只要对象实例和根没有引用关系则认为是垃圾。即便循环引用也没有关系。</p>
-<p>那是不是只要对象实例对于根对象而言不可达就会被立马回收掉呢？事实上不是的。JVM专门有一个线程叫做GC线程，专门用于垃圾回收。如果是一旦发现垃圾立马回收，显然效率太低，将会严重降低JVM的吞吐量。如果采用定时扫描自然会好很多。</p>
-<p>因此，JVM中方法区也好，堆区也好。当有类对象或对象实例成为垃圾时，如果进入了垃圾回收区并被GC扫描到就会被回收。</p>
-<p>这个垃圾回收区在HotSpot里叫做安全点(Safepoint)，当程序执行到安全点时，将暂停下来(Stop The World)，执行GC。</p>
-<h2>如何回收？</h2>
-
-<p>说清楚了哪些内存需要回收，什么时候可以进行垃圾回收。就应该说一说JVM如何进行垃圾回收了。</p>
-<p>Java7的HotSpot的垃圾回收算法不止一个，根据不同的场景(JVM运行时-client模式还是-server模式，是在新生代，老年代还是方法区)有不同的回收算法。</p>
-<p><img src="http://o9z6i1a1s.bkt.clouddn.com/gcthread.png" alt="JDK7 HotSpot中的GC线程"><br><img src="http://o9z6i1a1s.bkt.clouddn.com/gcthread2.png" alt=""></p>
-<p>关于JVM中采用的各种回收算法，在Oracle的这篇<a href="https://blogs.oracle.com/jonthecollector/entry/our_collectors" target="_blank" rel="external">博客</a>中写的比较官方。</p>
-<p><strong>注:本文只适用于HotSpot Java7</strong></p>
-<p><em>参考文献</em></p>
-<p><em>《深入理解Java虚拟机》 –周志明著</em><br><em><a href="https://blogs.oracle.com/jonthecollector/entry/our_collectors" target="_blank" rel="external">https://blogs.oracle.com/jonthecollector/entry/our_collectors</a></em></p>
+<p>一个看似有点复杂的逻辑，其实原理和实现都非常简单。关键在于随机位置的选取。</p>
 
       
     </div>
@@ -408,9 +405,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/JVM/" rel="tag">#JVM</a>
+            <a href="/tags/基础技术/" rel="tag">#基础技术</a>
           
-            <a href="/tags/垃圾回收/" rel="tag">#垃圾回收</a>
+            <a href="/tags/洗牌算法/" rel="tag">#洗牌算法</a>
           
         </div>
       
@@ -419,17 +416,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/08/java-new-anas-20160708/" rel="next" title="Java中当我们new一个对象时我们是在干啥？">
-                <i class="fa fa-chevron-left"></i> Java中当我们new一个对象时我们是在干啥？
+              <a href="/2016/12/18/20161218/" rel="next" title="无他,先占个坑">
+                <i class="fa fa-chevron-left"></i> 无他,先占个坑
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/16/what-is-life-meaning/" rel="prev" title="生活的意义">
-                生活的意义 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -444,10 +437,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/07/12/jvm-gc-desc/"
-     data-title="Java垃圾回收三大问"
+        <div class="ds-share flat" data-thread-key="2016/12/27/20161227/"
+     data-title="JDK中Collections的shuffle函数"
      data-content=""
-     data-url="http://wantedonline.cn/2016/07/12/jvm-gc-desc/">
+     data-url="http://wantedonline.cn/2016/12/27/20161227/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -474,8 +467,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/07/12/jvm-gc-desc/"
-           data-title="Java垃圾回收三大问" data-url="http://wantedonline.cn/2016/07/12/jvm-gc-desc/">
+      <div class="ds-thread" data-thread-key="2016/12/27/20161227/"
+           data-title="JDK中Collections的shuffle函数" data-url="http://wantedonline.cn/2016/12/27/20161227/">
       </div>
     
   </div>
@@ -618,7 +611,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">哪些内存需要回收？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">什么时候回收？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">如何回收？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">Collections的shuffle原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
