@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wantedonline.cn/"/>
-  <updated>2016-12-27T13:04:07.000Z</updated>
+  <updated>2016-12-30T12:32:43.000Z</updated>
   <id>http://wantedonline.cn/</id>
   
   <author>
@@ -14,6 +14,62 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>再见，2016！你好，2017</title>
+    <link href="http://wantedonline.cn/2016/12/30/20161230/"/>
+    <id>http://wantedonline.cn/2016/12/30/20161230/</id>
+    <published>2016-12-30T12:29:01.000Z</published>
+    <updated>2016-12-30T12:32:43.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><br>伪文艺青年的年终总结<br></blockquote>
+
+<p><img src="http://o9z6i1a1s.bkt.clouddn.com/2017-b.jpg" alt=""></p>
+<a id="more"></a>
+<p>坐在电脑前，思来想去，也不知道过去的一年到底做了些什么。就这样浑浑噩噩一年就过了。</p>
+<p>马上就26了，想想30也快了。每每想到30岁的情景，就不由得心头一紧。原来自己也害怕年老啊。已经不再是叫做长大了，而是叫做变老了。</p>
+<p>过去的一年也做了一点点事情吧。</p>
+<p>工作和技术发展上</p>
+<ul>
+<li>深入学习了Java并发，JVM</li>
+<li>对大型Web系统架构和关键技术比较熟悉了</li>
+<li>对待工作更加平和，更加严谨一些了</li>
+<li>明确了今后的职业发展路线和技术路线</li>
+</ul>
+<p>生活上</p>
+<ul>
+<li>最重大的变化就是择城而居了，虽然依然是背井离乡。</li>
+<li>好像没有了，依然单身，依然喜欢独处，依然不善于交际</li>
+</ul>
+<p>工作上，还算平稳中进步吧。生活上，依然是个loser。</p>
+<p>2017，估计也不会有太大的变化吧。</p>
+<p>今年能做好三件事情就很不错了。</p>
+<ol>
+<li>把自己的开源项目<a href="https://github.com/34benma/Puppy" target="_blank" rel="external">Puppy</a>做好；</li>
+<li>参与其他有益的项目，往架构师方向努力；</li>
+<li>Open，Open，Open. 周末能多多参加有益的活动吧，不要再这样把自己固定在一个地方了。</li>
+</ol>
+<p>希望2017，在这三个事情上，能有所收获~</p>
+<hr>
+<p>我也玩一把微信公众号吧，不知道自己能不能坚持下去。<img src="http://o9z6i1a1s.bkt.clouddn.com/qrcode_for_gh_71949902d944_258.jpg" alt=""></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;&lt;br&gt;伪文艺青年的年终总结&lt;br&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://o9z6i1a1s.bkt.clouddn.com/2017-b.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="随笔" scheme="http://wantedonline.cn/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+      <category term="年终总结" scheme="http://wantedonline.cn/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
   
   <entry>
     <title>JDK中Collections的shuffle函数</title>
@@ -776,9 +832,9 @@
     
       <category term="并发编程" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
-      <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
-    
       <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
+    
+      <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
     
   </entry>
   
@@ -910,40 +966,6 @@
       <category term="软件开发" scheme="http://wantedonline.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/"/>
     
       <category term="IT生涯" scheme="http://wantedonline.cn/tags/IT%E7%94%9F%E6%B6%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>忧愁的香烟</title>
-    <link href="http://wantedonline.cn/2016/08/07/20160807-1/"/>
-    <id>http://wantedonline.cn/2016/08/07/20160807-1/</id>
-    <published>2016-08-07T15:28:06.000Z</published>
-    <updated>2016-08-07T15:34:10.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>今晚(2016-08-07)夜跑结束，一种孤独和忧愁涌上心头。便买来香烟一个人坐在草地上思考了人生……</p>
-<a id="more"></a>
-<p>我点燃一根香烟<br>一个人静静地坐在草地上</p>
-<p>偶尔有路人带着疲惫和忧愁从我身边目视前方走过<br>我不知道他们在忧愁什么<br>就像他们不知道我在忧愁什么一样</p>
-<p>不远处三位大妈<br>正在谈论着彼此儿女的婚姻<br>她们不理解儿女的一些事儿<br>我也不理解所谓的爱情和婚姻</p>
-<p>我静静地坐在草地上<br>抽了一根又一根的香烟<br>今夜，我愿就这样沉睡下去<br>带着我的香烟和忧愁<br>永远地沉睡下去</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;今晚(2016-08-07)夜跑结束，一种孤独和忧愁涌上心头。便买来香烟一个人坐在草地上思考了人生……&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="随笔" scheme="http://wantedonline.cn/categories/%E9%9A%8F%E7%AC%94/"/>
-    
-    
-      <category term="生活" scheme="http://wantedonline.cn/tags/%E7%94%9F%E6%B4%BB/"/>
-    
-      <category term="孤独" scheme="http://wantedonline.cn/tags/%E5%AD%A4%E7%8B%AC/"/>
-    
-      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
-    
-      <category term="小诗" scheme="http://wantedonline.cn/tags/%E5%B0%8F%E8%AF%97/"/>
     
   </entry>
   
