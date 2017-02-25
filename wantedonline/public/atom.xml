@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wantedonline.cn/"/>
-  <updated>2017-02-12T13:10:37.000Z</updated>
+  <updated>2017-02-25T17:10:49.000Z</updated>
   <id>http://wantedonline.cn/</id>
   
   <author>
@@ -14,6 +14,60 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>记CentOS 7防火墙配置遇到的坑</title>
+    <link href="http://wantedonline.cn/2017/02/26/20170225/"/>
+    <id>http://wantedonline.cn/2017/02/26/20170225/</id>
+    <published>2017-02-25T17:08:36.000Z</published>
+    <updated>2017-02-25T17:10:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>今晚打算在空闲的机器上搭一个jenkins玩一玩，结果搞了半天，本地能访问jenkins，但是同一个局域网远程访问就是不行。最后发现原来是防火墙配置的问题。</p>
+<p>第一个玩这个东西，很多知识都只能靠度娘(吐槽一下度娘搜索质量之低以及中文技术文章重复率之高)，搞半天都是有关iptables的配置。但是在我机器上，虽然有iptables命令，但是就是没有/etc/sysconfig/iptables这个文件。 搞了两个小时才发现，原来CentOS 7 已经弃用了iptables做防火墙，而改用firewalld了。</p>
+<a id="more"></a>
+<p>记录一些关于firewalld一些重要设置命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">firewall-cmd --zone=public --add-port=8080/tcp --permanent</div></pre></td></tr></table></figure>
+<p>打开8080端口，–zone表示作用域，–permanent表示永久生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl restart firewalld.service</div></pre></td></tr></table></figure>
+<p>重启防火墙</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl status firewalld</div></pre></td></tr></table></figure>
+<p>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">firewall-cmd --state</div></pre></td></tr></table></figure></p>
+<p>查看状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl disable firewalld</div></pre></td></tr></table></figure>
+<p>停止防火墙,将 disable换成stop就是禁用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">firewall-cmd --reload</div></pre></td></tr></table></figure>
+<p>更新防火墙规则</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">firewall-cmd --set-default-zone=public</div></pre></td></tr></table></figure>
+<p>设置默认接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">firewall-cmd -zone=dmz --list-ports</div></pre></td></tr></table></figure>
+<p>查看所有打开的端口</p>
+<p>因此我只需要开启8080端口，然后重启服务就好。</p>
+<p>如果这招不管用，就直接上大招，去掉全部防火墙规则即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iptables -F</div></pre></td></tr></table></figure>
+<hr>
+<p><em>参考文献</em></p>
+<ol>
+<li><a href="http://www.cnblogs.com/archoncap/p/5402983.html" target="_blank" rel="external">Centos 7防火墙firewalld开放80端口</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;今晚打算在空闲的机器上搭一个jenkins玩一玩，结果搞了半天，本地能访问jenkins，但是同一个局域网远程访问就是不行。最后发现原来是防火墙配置的问题。&lt;/p&gt;
+&lt;p&gt;第一个玩这个东西，很多知识都只能靠度娘(吐槽一下度娘搜索质量之低以及中文技术文章重复率之高)，搞半天都是有关iptables的配置。但是在我机器上，虽然有iptables命令，但是就是没有/etc/sysconfig/iptables这个文件。 搞了两个小时才发现，原来CentOS 7 已经弃用了iptables做防火墙，而改用firewalld了。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="软件开发日常" scheme="http://wantedonline.cn/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E6%97%A5%E5%B8%B8/"/>
+    
+    
+      <category term="Linux" scheme="http://wantedonline.cn/tags/Linux/"/>
+    
+      <category term="防火墙配置" scheme="http://wantedonline.cn/tags/%E9%98%B2%E7%81%AB%E5%A2%99%E9%85%8D%E7%BD%AE/"/>
+    
+      <category term="运维" scheme="http://wantedonline.cn/tags/%E8%BF%90%E7%BB%B4/"/>
+    
+  </entry>
   
   <entry>
     <title>孤独随感</title>
@@ -425,11 +479,11 @@
       <category term="软件开发日常" scheme="http://wantedonline.cn/categories/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E6%97%A5%E5%B8%B8/"/>
     
     
-      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
-    
       <category term="软件开发" scheme="http://wantedonline.cn/tags/%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91/"/>
     
       <category term="IT生涯" scheme="http://wantedonline.cn/tags/IT%E7%94%9F%E6%B6%AF/"/>
+    
+      <category term="随笔" scheme="http://wantedonline.cn/tags/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
@@ -872,96 +926,9 @@
     
       <category term="并发编程" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
-      <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
-    
       <category term="并发" scheme="http://wantedonline.cn/tags/%E5%B9%B6%E5%8F%91/"/>
     
-  </entry>
-  
-  <entry>
-    <title>亲自动手做的工具(一)</title>
-    <link href="http://wantedonline.cn/2016/08/24/20160826-1/"/>
-    <id>http://wantedonline.cn/2016/08/24/20160826-1/</id>
-    <published>2016-08-24T09:46:29.000Z</published>
-    <updated>2016-09-20T11:58:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>结合工作需要，做了一个为Javaer Web开发者提供的自动化PO文件生成工具，同时支持生成docx格式的数据字典</p>
-<a id="more"></a>
-<h2>工具用途</h2>
-
-<p>在Java Web开发过程中，我们总要手动去生成一些PO类(Persistent Object),这些类一般映射到数据库中的一张表。这些代码简单，模式化程度高。因此做了这个工具来简化开发者的工作。</p>
-<p>本工具为一个maven 工程，使用非常简单，效率极高。</p>
-<h2>目前支持</h2>
-
-
-<ul>
-<li>批量生成所配置的数据库的全部表；</li>
-<li>自定义类后缀</li>
-<li>自定义生成类路径</li>
-<li>根据数据库表字段注释生成java文件字段注释</li>
-<li>自定义排除特定表的生成类</li>
-</ul>
-<h2>后续可能支持特性</h2>
-
-<ul>
-<li>自定义生成特定表的生成类</li>
-<li>更加智能化和易用化</li>
-</ul>
-<h2>约束</h2>
-
-<p>要生成开发者友好的文件，建议数据库表名，字段名采用驼峰命名法。命名合符Java规范。</p>
-<h2>使用方法</h2>
-
-<p>Step 1 down下本工程，导入Maven工程：<br><img src="http://o9z6i1a1s.bkt.clouddn.com/2016082401.png" alt=""></p>
-<p>导入成功后，工程目录如下：<br><img src="http://o9z6i1a1s.bkt.clouddn.com/2016082402.png" alt=""></p>
-<p><em>注意： 如果要生成docx格式的数据字典，需要依赖POI，直接使用maven导入poi依赖会报错，因此采用本地导入，建了一个lib目录，已经将依赖包放到lib目录，在pom配置文件中配置好了本地依赖</em></p>
-<p>Step2 根据自己的需求，修改配置文件，配置文件在工程根目录下，文件名字是 <strong>datasource.properties</strong><br><img src="http://o9z6i1a1s.bkt.clouddn.com/2014082403.png" alt=""><br><strong>配置说明</strong></p>
-<ul>
-<li>mysqlDriver 目前仅支持mysql，因此这里可以不用变(后续可能会支持多种数据库)</li>
-<li>globalUserName 如果你有很多数据库要生成，并且这些数据库的用户名一样，可以配置这个变量</li>
-<li>globalPassword 同上，这里是配置统一的密码</li>
-<li>url_jdbc_your_db<em>name 单独配置某个数据库的链接url，注意，url</em>这个前缀必须统一</li>
-<li>username_your_db_name 单独配置某个数据库的用户名，这里前缀必须有，如果全部数据库都用一个用户名，这里可以缺省不配</li>
-<li>password_your_db_name 同上，配置密码，如果全局密码一致，可以缺省</li>
-<li>exclude_your_db_name 跳过生成PO的表,使用英文状态下的逗号分隔 前缀固定 databaseName必须是所连接的数据库真实名称</li>
-<li>po_package 你要生成的PO文件包名，使用标准的包，用 . 分隔，生成的PO文件会直接放到这下面，方便直接拖入你的工程</li>
-<li>po_suffix 生成的PO文件后缀，默认是xxxPO.java，可以自定义</li>
-<li>serialize 是否需要序列化，默认是false，如果该选项为true，则自动实现序列化接口</li>
-</ul>
-<p><em>可以一次配置多个数据库，只要按照格式注意前缀和数据库名，如果连接失败会报错</em></p>
-<p>配置完之后，找到入口Main.java, 按下F11 运行工程即可。如果需要生成数据字段，则将入参配置为true<br><img src="http://o9z6i1a1s.bkt.clouddn.com/2016082404.png" alt=""></p>
-<p>如果没有任何输出就结束了工程就是好结果。</p>
-<p>如果有输出，根据输出排错</p>
-<h2>正确生成的结果</h2>
-
-<p>生成的部分文件<br><img src="http://o9z6i1a1s.bkt.clouddn.com/2016082405.png" alt=""><br>文件内容<br><img src="http://o9z6i1a1s.bkt.clouddn.com/2014082406.png" alt=""><br>生成的数据字典样式<br><img src="http://o9z6i1a1s.bkt.clouddn.com/2016082407.png" alt=""></p>
-<h2>关键源码说明：</h2>
-
-<p>Main.java 启动类</p>
-<p>DataBaseEntity.java 业务类，具体的生产逻辑都在这里</p>
-<p>utils包中</p>
-<p>ConfigParser.java 配置文件解析类，校验配置有效性也在这里完成</p>
-<p>ConnectionHelper.java Mysql 链接获取以及操作类</p>
-<h2>致谢</h2>
-
-<p>生成PO文件的逻辑是在同事的基础上修改完成，修改引用了同事(仇老板)的parse(我修改为了parseTable)，自动生成字段，get，set方法，文件输出等逻辑，在此表示感谢~~~</p>
-<h2>获取项目</h2>
-
-<p><a href="https://github.com/34benma/PORobot" target="_blank" rel="external">GitHub地址</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;结合工作需要，做了一个为Javaer Web开发者提供的自动化PO文件生成工具，同时支持生成docx格式的数据字典&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="工具" scheme="http://wantedonline.cn/categories/%E5%B7%A5%E5%85%B7/"/>
-    
-    
-      <category term="工具" scheme="http://wantedonline.cn/tags/%E5%B7%A5%E5%85%B7/"/>
-    
-      <category term="生产效率" scheme="http://wantedonline.cn/tags/%E7%94%9F%E4%BA%A7%E6%95%88%E7%8E%87/"/>
+      <category term="深入理解" scheme="http://wantedonline.cn/tags/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3/"/>
     
   </entry>
   
